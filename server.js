@@ -12,6 +12,3 @@ app.use("/api/v1/auth", authenticRoutes)
 app.listen(3000, () => {
   console.log("server running onnn 3000 port");
 });
-
-
-// 
