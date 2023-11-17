@@ -1,11 +1,11 @@
-const signupFromService = require("../services/user-services/signup.service");
-const loginFromService = require("../services/user-services/login.service");
+const fromService = require("../services/user.service");
+// const loginFromService = require("../services/user-services/login.service");
 
 const signUp = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
-    const token = await signupFromService(username, email, password );
+    const token = await fromService.signUp(username, email, password );
     if(!token) return res.send("user already exists");
 
     res.cookie("access-token", token, { maxAge: 30 * 24 * 60 * 60 });
@@ -19,7 +19,7 @@ const logIn = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const token = await loginFromService(username, password );
+    const token = await fromService.logIn(username, password );
 
     if(!token) return res.send("Username or Password incorrect");
 
