@@ -1,14 +1,13 @@
 const express = require("express");
 const app = express();
-const authenticRoutes = require("./routes/authentic.route");
+const indexRoutes = require("./routes/index.route");
 app.use(express.json());
 
-app.post("/", (req, res) => {
-  res.send("Home Page");
-});
+app.use(indexRoutes);
 
-app.use("/api/v1/auth", authenticRoutes)
+app.use("/api/v1", indexRoutes);
 
 app.listen(3000, () => {
   console.log("server running onnn 3000 port");
 });
+
