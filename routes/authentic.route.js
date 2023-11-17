@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/authentic.controller");
-// const validation = require("../middleware/validate.middleware");
-// const schema = require("../middleware/user.validation");
 const validate = require("../middleware/user.validation")
 
 

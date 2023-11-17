@@ -36,7 +36,9 @@ const logIn = async (username, password) => {
 
     const token = jwtToken(username);
     return token;
-  } catch (error) {}
+  } catch (error) {
+    return error;
+  }
 };
 
 module.exports = { signUp, logIn };
