@@ -5,7 +5,7 @@ const signUp = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
-    const token = await fromService.signUp(username, email, password );
+    const token = await fromService.signUp(req.body);
     if(!token) return res.send("user already exists");
 
     res.cookie("access-token", token, { maxAge: 30 * 24 * 60 * 60 });

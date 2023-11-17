@@ -1,10 +1,12 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const authenticRepo = require("../repositories/authentic.repo");
+const userDto = require("../dto/user.dto");
 const jwtToken = require("../utils/JWT");
 
-const signUp = async (username, email, password) => {
+const signUp = async (body) => {
   try {
+    const { username, email, password } = userDto(body)
     const singleUser = await authenticRepo.signUpRepo(email);
 
     if (singleUser) return null;
