@@ -22,7 +22,6 @@ const logIn = async (req, res, next) => {
     const token = await fromService.logIn(userDtoBody);
 
     if (!token) throw error
-
     res.cookie("access-token", token, { maxAge: 30 * 24 * 60 * 60 });
     return res.status(200).send("Login Success!");
   } catch (error) {
