@@ -1,5 +1,5 @@
 const jwtToken = require("../utils/JWT");
-const authenticRepo = require("../repositories/authentic.repo");
+const authenticRepo = require("../repositories/authentication.repo");
 
 const signUp = async (userDtoBody) => {
   try {

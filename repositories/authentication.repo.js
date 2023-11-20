@@ -6,7 +6,9 @@ const signUpRepo = async (username, email, password) => {
     const singleUser = await User.findOne({ where: { email: email } });
 
     if (singleUser) {
-      throw new Error("User already exist !");
+      const error = new Error("User already exist !");
+      error.status = 409;
+      throw error;
     }
 
     const salt = await bcrypt.genSalt();
@@ -31,13 +33,20 @@ const logInRepo = async (username, password) => {
     });
 
     if (!findUserWithUserName) {
-      throw new Error("Username not found");
+      const error = new Error("Username not found");
+      error.status = 404;
+      throw error;
     }
 
-    const isValid = await bcrypt.compare(password, findUserWithUserName.password);
+    const isValid = await bcrypt.compare(
+      password,
+      findUserWithUserName.password
+    );
 
     if (!isValid) {
-      throw new Error("Wrong password");
+      const error = new Error("Wrong password");
+      error.status = 401;
+      throw error;
     }
 
     return isValid;
