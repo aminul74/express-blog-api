@@ -1,24 +1,48 @@
 const User = require("../models/user.model");
+const bcrypt = require("bcrypt");
 
-const signUpRepo = async (email) => {
+const signUpRepo = async (username, email, password) => {
   try {
-    const findUserWithEmail = await User.findOne({ where: { email: email } });
+    const singleUser = await User.findOne({ where: { email: email } });
 
-    return findUserWithEmail;
+    if (singleUser) {
+      throw new Error("User already exist !");
+    }
+
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashPassword,
+    });
+
+    return newUser;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
-const logInRepo = async (username) => {
+const logInRepo = async (username, password) => {
   try {
     const findUserWithUserName = await User.findOne({
       where: { username: username },
     });
 
-    return findUserWithUserName;
+    if (!findUserWithUserName) {
+      throw new Error("Username not found");
+    }
+
+    const isValid = await bcrypt.compare(password, findUserWithUserName.password);
+
+    if (!isValid) {
+      throw new Error("Wrong password");
+    }
+
+    return isValid;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 

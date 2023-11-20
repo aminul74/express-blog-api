@@ -1,45 +1,24 @@
-const bcrypt = require("bcrypt");
-const User = require("../models/user.model");
-const authenticRepo = require("../repositories/authentic.repo");
-const userDto = require("../dto/user.dto");
 const jwtToken = require("../utils/JWT");
+const authenticRepo = require("../repositories/authentic.repo");
 
-const signUp = async (body) => {
+const signUp = async (userDtoBody) => {
   try {
-    const { username, email, password } = userDto(body)
-    const singleUser = await authenticRepo.signUpRepo(email);
-
-    if (singleUser) return null;
-
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
-
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashPassword,
-    });
-
-    const token = jwtToken(newUser);
+    
+    const createNewUser = await authenticRepo.signUpRepo(userDtoBody.username, userDtoBody.email, userDtoBody.password);
+    const token = jwtToken(createNewUser);
     return token;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
-const logIn = async (username, password) => {
+const logIn = async (userDtoBody) => {
   try {
-    const user = await authenticRepo.logInRepo(username);
-    if (!user) return null;
-
-    const isValid = await bcrypt.compare(password, user.password);
-
-    if (!isValid) return null;
-
-    const token = jwtToken(username);
+    const successfullLogedInUser = await authenticRepo.logInRepo(userDtoBody.username, userDtoBody.password);
+    const token = jwtToken(successfullLogedInUser);
     return token;
   } catch (error) {
-    return error;
+    throw error;
   }
 };
 
