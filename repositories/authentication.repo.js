@@ -55,7 +55,50 @@ const logInRepo = async (username, password) => {
   }
 };
 
+
+
+const getProfileFromRepo = async (user) => {
+  try {
+    const username = user.tokenParam;
+    const userProfile = await User.findOne({
+      where: { username },
+      attributes: ["id", "username", "email"],
+    });
+
+    if (!userProfile) {
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
+    }
+
+    return userProfile;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteProfileFromRepo = async(user)=>{
+  try {
+    const username = user.tokenParam;
+    const deleteProfile = await User.destroy({
+      where: { username },
+    });
+
+    if (!deleteProfile) {
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
+    }
+
+    return deleteProfile;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   signUpRepo,
   logInRepo,
+  getProfileFromRepo,
+  deleteProfileFromRepo
 };

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authenticRoutes = require("../routes/authentic.route");
+const authenticRoutes = require("./authentication.route");
 const blogRoutes = require("../routes/blog.routes");
 
 router.get("/", (req, res) => {

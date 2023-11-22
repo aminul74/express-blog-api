@@ -6,5 +6,6 @@ const validate = require("../middleware/user.validation")
 
 router.post("/register",validate.validateSignup, controller.signUp);
 router.post("/login",validate.validateLogin, controller.logIn);
-
+router.get("/my-profile",controller.myProfile);
+router.delete("/delete", controller.deleteProfile);
 module.exports = router;
