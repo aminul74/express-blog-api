@@ -3,9 +3,10 @@ const sequelize = require("../configures/database");
 
 const Blog = sequelize.define("Blog", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey:true,
+    autoIncrement: true,
   },
   title: {
     type: DataTypes.STRING,

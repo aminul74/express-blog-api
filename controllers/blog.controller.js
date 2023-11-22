@@ -1,23 +1,24 @@
-const blogService = require("../services/blog.service");
+const {createNewBlogInService} = require("../services/blog.service");
 // const { UserBlogRequestDto } = require("../dto/blog.dto");
 
-const getAllBlogs = async (req, res, next) => {
-  try {
-    const allBlogs = await blogService.findAllBlog(req.query);
-    return res.status(200).send(allBlogs);
-  } catch (error) {
+// const getAllBlogs = async (req, res, next) => {
+//   try {
 
-  }
-};
+//     const allBlogs = await findAllBlog();
+//     return res.status(200).send(allBlogs);
+//   } catch (error) {
+
+//   }
+// };
 
 const createBlog = async (req, res, next) => {
   try {
-    const { id, title, content, authorId } = req.body;
-    const newBlog = await blogService.createBlogService(title, content);
+    const {title, content, authorId} = req.body;
+    const newBlog = await createNewBlogInService(title, content, authorId);
     return res.status(200).send(newBlog);
   } catch (error) {
     throw error
   }
 };
 
-module.exports = { getAllBlogs,createBlog };
+module.exports = {createBlog };

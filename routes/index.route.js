@@ -6,8 +6,7 @@ const blogRoutes = require("../routes/blog.routes");
 router.get("/", (req, res) => {
   res.send("Home Page");
 });
-
 router.use("/auth", authenticRoutes);
-router.use("/blogs", blogRoutes);
+router.use("/users", blogRoutes);
 
 module.exports = router;
