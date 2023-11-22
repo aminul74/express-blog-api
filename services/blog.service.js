@@ -1,5 +1,5 @@
-const Blog = require("../models/blog.model");
-const {createNewBlogInRepo} = require("../repositories/blog.repository");
+// const Blog = require("../models/blog.model");
+// const {createNewBlogInRepo} = require("../repositories/blog.repository");
 // const findAllBlog = (query) => {
 //   try {
 //     const allBlog = Blog.findAll({
@@ -14,9 +14,11 @@ const {createNewBlogInRepo} = require("../repositories/blog.repository");
 //   }
 // };
 
-const createNewBlogInService = async (title, content,authorId) => {
+const {createNewBlogInRepo} = require("../repositories/blog.repository");
+
+const blogService = async (blogDto) => {
   try {
-    const newBlog = await createNewBlogInRepo(title, content,authorId);
+    const newBlog = await createNewBlogInRepo(blogDto);
     if (!newBlog) {
       throw new Error("Failed to create a new blog post");
     }
@@ -26,4 +28,6 @@ const createNewBlogInService = async (title, content,authorId) => {
   }
 };
 
-module.exports = {createNewBlogInService };
+module.exports = {blogService };
+
+

@@ -19,6 +19,7 @@ const signUp = async (req, res, next) => {
 
 const logIn = async (req, res, next) => {
   try {
+    
     const userDtoBody = new UserLoginRequestDto(req.body);
     const token = await fromService.logIn(userDtoBody);
     

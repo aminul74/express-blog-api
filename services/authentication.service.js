@@ -1,4 +1,4 @@
-const jwtToken = require("../utils/JWT");
+const {createToken} = require("../utils/JWT");
 const authenticRepo = require("../repositories/authentication.repo");
 
 const signUp = async (userDtoBody) => {
@@ -8,7 +8,7 @@ const signUp = async (userDtoBody) => {
       userDtoBody.email,
       userDtoBody.password
     );
-    const token = jwtToken(createNewUser);
+    const token = createToken(createNewUser);
     return token;
   } catch (error) {
     throw error;
@@ -21,7 +21,7 @@ const logIn = async (userDtoBody) => {
       userDtoBody.username,
       userDtoBody.password
     );
-    const token = jwtToken(successfullLogedInUser);
+    const token = createToken(successfullLogedInUser);
     return token;
   } catch (error) {
     throw error;

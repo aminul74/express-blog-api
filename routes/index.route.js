@@ -7,6 +7,6 @@ router.get("/", (req, res) => {
   res.send("Home Page");
 });
 router.use("/auth", authenticRoutes);
-router.use("/users", blogRoutes);
+router.use("/blogs", blogRoutes);
 
 module.exports = router;

@@ -1,16 +1,11 @@
+
 class UserBlogRequestDto {
-  title;
-  author;
-  date;
-  content;
-
   constructor(body) {
-    const { title, author, date, content } = body;
-
+    const { title, content, author } = body;
     this.title = title;
-    this.author = author;
-    this.date = date;
     this.content = content;
+    this.author = author;
+
   }
 }
 

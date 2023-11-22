@@ -2,11 +2,11 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../configures/database");
 
 const Blog = sequelize.define("Blog", {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey:true,
-    autoIncrement: true,
+  id:{
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: true,
+    primaryKey: true,
   },
   title: {
     type: DataTypes.STRING,
@@ -15,10 +15,9 @@ const Blog = sequelize.define("Blog", {
   content: {
     type: DataTypes.TEXT,
   },
-  authorId:{
-    type: DataTypes.INTEGER,
-    allowNull: false
-  }
+  author: {
+    type: DataTypes.STRING,
+  },
   
 });
 
