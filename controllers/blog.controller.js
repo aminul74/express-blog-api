@@ -7,7 +7,7 @@ const { tokenDecoder } = require("../utils/JWT");
 
 const createBlog = async (req, res, next) => {
   try {
-    const receivedCookie = req.cookies.access - token;
+    // const receivedCookie = req.cookies.access - token;
     // console.log("xxxxxxxxxxxxxxxxxxxx", receivedCookie);
 
     const blogDto = new UserBlogRequestDto(req.body);

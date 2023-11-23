@@ -41,13 +41,30 @@ const getProfileService = async (user) => {
   }
 };
 
-const deleteProfileService = async(user) =>{
+const deleteProfileService = async (user) => {
   try {
-    const deleteProfileProfile = await authenticRepo.deleteProfileFromRepo(user);
+    const deleteProfileProfile = await authenticRepo.deleteProfileFromRepo(
+      user
+    );
     return deleteProfileProfile;
   } catch (error) {
     throw error;
   }
-}
+};
 
-module.exports = { signUp, logIn, getProfileService, deleteProfileService };
+const updateProfileService = async (userDtoBody) => {
+  try {
+    const updateProfile = await authenticRepo.updateProfileFromRepo(userDtoBody);
+    return updateProfile;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  signUp,
+  logIn,
+  getProfileService,
+  deleteProfileService,
+  updateProfileService,
+};

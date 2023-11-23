@@ -1,6 +1,11 @@
-const fromService = require("../services/authentication.service");
-const { UserRegRequestDto, UserLoginRequestDto } = require("../dto/user.dto");
 const { tokenDecoder } = require("../utils/JWT");
+const fromService = require("../services/authentication.service");
+const {
+  UserRegRequestDto,
+  UserLoginRequestDto,
+  UserUpdateRequestDto,
+} = require("../dto/user.dto");
+
 const signUp = async (req, res, next) => {
   try {
     const userDtoBody = new UserRegRequestDto(req.body);
@@ -39,7 +44,7 @@ const myProfile = async (req, res, next) => {
     const user = await tokenDecoder(authToken.split(" ")[1]);
     const userProfile = await fromService.getProfileService(user);
     if (!userProfile) {
-      throw new Error("Unauthorized !");
+      throw new Error("Unauthorized!");
     }
     return res.status(200).send(userProfile);
   } catch (error) {
@@ -47,18 +52,33 @@ const myProfile = async (req, res, next) => {
   }
 };
 
-const deleteProfile = async(req, res, next) =>{
+const deleteProfile = async (req, res, next) => {
   try {
     const authToken = req.get("authorization");
     const user = await tokenDecoder(authToken.split(" ")[1]);
     const deleteProfile = await fromService.deleteProfileService(user);
     if (!deleteProfile) {
-      throw new Error("Can not possible to delete");
+      throw new Error("Not possible to delete");
     }
-    return res.status(200).send("Delete Success!");
+    return res.status(204).send("User delete success!");
   } catch (error) {
     next(error);
   }
-}
+};
 
-module.exports = { signUp, logIn, myProfile, deleteProfile };
+const updateProfile = async (req, res, next) => {
+  try {
+    const authToken = req.get("authorization");
+    const user = await tokenDecoder(authToken.split(" ")[1]);
+    const userDtoBody = new UserUpdateRequestDto(req.body, user);
+    const updateProfile = await fromService.updateProfileService(userDtoBody);
+    if (!updateProfile) {
+      throw new Error("Not possible to update");
+    }
+    return res.status(200).send("Password update success!");
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { signUp, logIn, myProfile, deleteProfile, updateProfile };

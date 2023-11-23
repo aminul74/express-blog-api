@@ -55,8 +55,6 @@ const logInRepo = async (username, password) => {
   }
 };
 
-
-
 const getProfileFromRepo = async (user) => {
   try {
     const username = user.tokenParam;
@@ -77,7 +75,7 @@ const getProfileFromRepo = async (user) => {
   }
 };
 
-const deleteProfileFromRepo = async(user)=>{
+const deleteProfileFromRepo = async (user) => {
   try {
     const username = user.tokenParam;
     const deleteProfile = await User.destroy({
@@ -94,11 +92,60 @@ const deleteProfileFromRepo = async(user)=>{
   } catch (error) {
     throw error;
   }
-}
+};
+
+const updateProfileFromRepo = async (userDtoBody) => {
+  try {
+    const username = userDtoBody.username;
+    const foundUser = await User.findOne({
+      where: { username: userDtoBody.username },
+    });
+    if (!foundUser) {
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
+    }
+
+    const newPassword = foundUser.password;
+
+    console.log("1st", newPassword);
+    const updateProfile = await User.update(
+      { password: newPassword },
+      {
+        where: { username: userDtoBody.username },
+      }
+    );
+    console.log("2nd", updateProfile);
+    return updateProfile;
+    // if (!newPassword) {
+    //   const error = new Error("New password is required");
+    //   error.status = 400;
+    //   throw error;
+    // }
+
+    // const updateProfile = await User.update(
+    //   { password: newPassword },
+    //   {
+    //     where: { username },
+    //   }
+    // );
+
+    // if (updateProfile[0] === 0) {
+    //   const error = new Error("User not found");
+    //   error.status = 404;
+    //   throw error;
+    // }
+
+    // return updateProfile;
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = {
   signUpRepo,
   logInRepo,
   getProfileFromRepo,
-  deleteProfileFromRepo
+  deleteProfileFromRepo,
+  updateProfileFromRepo,
 };

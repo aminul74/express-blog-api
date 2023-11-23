@@ -24,4 +24,30 @@ class UserLoginRequestDto {
   }
 }
 
-module.exports = { UserRegRequestDto, UserLoginRequestDto };
+// class UserGetRequestDto {
+//   password;
+
+//   constructor(body) {
+//     this.password;
+//   }
+// }
+// class UserDeleteRequestDto {
+//   password;
+
+//   constructor(body) {
+//     this.password;
+//   }
+// }
+
+class UserUpdateRequestDto {
+  constructor(body, user) {
+    this.username = user.tokenParam;
+    this.password = body.password;
+  }
+}
+
+module.exports = {
+  UserRegRequestDto,
+  UserLoginRequestDto,
+  UserUpdateRequestDto,
+};
