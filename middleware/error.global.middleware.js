@@ -4,7 +4,7 @@ module.exports = (err, req, res, next) => {
 
   console.log("from global err:",err);
   if (errStatus == 500) {
-    errMessage = "Internal Server Error";
+    errMessage = "Internal Server Error !!";
   } else {
     errMessage = err.message || "Unknown Error";
   }

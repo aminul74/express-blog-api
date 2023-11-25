@@ -1,21 +1,21 @@
 const { sign, verify } = require("jsonwebtoken");
 // require("dotenv").config();
 
-const createToken = (username) => {
-  console.log("un", username);
-  const accessToken = sign({ tokenParam: username }, "access-token");
+const TOKEN_KEY = "access-token";
+
+const createToken = (userId) => {
+  console.log("userId", userId);
+  const accessToken = sign({ id: userId }, TOKEN_KEY);
   return accessToken;
 };
 
-async function tokenDecoder(token) {
+const decodeToken = async (token) => {
   try {
-    const decodedToken = verify(token, "access-token");
-    console.log(decodedToken.tokenParam);
-    return decodedToken;
+    console.log("token", token);
+    return verify(token, TOKEN_KEY); // { id: userId }
   } catch (error) {
-    console.error(error.message);
-    return null;
+    throw error;
   }
-}
+};
 
-module.exports = { createToken, tokenDecoder };
+module.exports = { createToken, decodeToken };

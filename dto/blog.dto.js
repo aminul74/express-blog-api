@@ -1,11 +1,13 @@
-
 class UserBlogRequestDto {
-  constructor(body) {
-    const { title, content, author } = body;
+  constructor(body, user) {
+    const { title, content } = body;
+    const username = user.username;
+    console.log("Debug - title:", title);
+    console.log("Debug - content:", content);
+    console.log("Debug - username:", username);
     this.title = title;
     this.content = content;
-    this.author = author;
-
+    this.username = username;
   }
 }
 

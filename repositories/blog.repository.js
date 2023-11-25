@@ -2,12 +2,12 @@ const Blog = require("../models/blog.model");
 
 const createNewBlogInRepo = async (blogDto) => {
   try {
-    const {title,content,author} = blogDto
+    const {title,content, username} = blogDto
     console.log("before:")
     const newBlog = await Blog.create({
       title,
       content,
-      author
+      username
     });
 
     console.log("after")

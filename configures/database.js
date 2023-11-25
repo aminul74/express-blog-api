@@ -7,7 +7,7 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME,pro
 });
 
 sequelize
-  .sync({ force: false })
+  .sync({force: false })
   .then(() => {
     console.log("Sync Success!");
   })
