@@ -6,6 +6,7 @@ const {
   UserUpdateRequestDto,
 } = require("../dto/user.dto");
 
+
 const handleUserRegistration = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;

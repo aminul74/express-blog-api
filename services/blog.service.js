@@ -1,33 +1,47 @@
-// const Blog = require("../models/blog.model");
-// const {createNewBlogInRepo} = require("../repositories/blog.repository");
-// const findAllBlog = (query) => {
-//   try {
-//     const allBlog = Blog.findAll({
-//       where: {
-//         title: query.title,
-//         content: query.content,
-//       },
-//     });
-//     return allBlog;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+const blogRepositories = require("../repositories/blog.repository");
+const userServices = require("../services/user.service");
 
-const {createNewBlogInRepo} = require("../repositories/blog.repository");
-
-const blogService = async (blogDto) => {
+const processNewBlog = async (user, blogDto) => {
   try {
-    const newBlog = await createNewBlogInRepo(blogDto);
-    if (!newBlog) {
-      throw new Error("Failed to create a new blog post");
+    const proccessBlog = await blogRepositories.createBlog(
+      user.id,
+      blogDto.title,
+      blogDto.content
+    );
+
+    if (!proccessBlog) {
+      throw new Error("Unable to process! Please try again");
     }
-    return newBlog;
+    return proccessBlog;
   } catch (error) {
     throw error;
   }
 };
 
-module.exports = {blogService };
+const processSpecificUserBlog = async (user) => {
+  try {
+    console.log("QQQQQQQQ",user.username)
+    const processToFindAllBlog = await blogRepositories.findBlogById(user.id);
+    if (!processToFindAllBlog) {
+      throw new Error("Please try again");
+    }
+    return processToFindAllBlog;
+  } catch (error) {
+    throw error;
+  }
+};
 
 
+const processAllBlogs = async(res)=>{
+  try {
+    const processAllBlogs = await blogRepositories.findAllBlogs();
+    if (!processAllBlogs) {
+      throw new Error("Something went wrong!")
+    }
+    return processAllBlogs;
+  } catch (error) {
+    throw error
+  }
+}
+
+module.exports = { processNewBlog, processSpecificUserBlog, processAllBlogs };

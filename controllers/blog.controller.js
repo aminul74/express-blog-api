@@ -1,31 +1,64 @@
-// const {createNewBlogInService} = require("../services/blog.service");
-// const { UserBlogRequestDto } = require("../dto/blog.dto");
-
+const blogService = require("../services/blog.service");
+const userServices = require("../services/user.service");
 const { UserBlogRequestDto } = require("../dto/blog.dto");
-const { blogService } = require("../services/blog.service");
-const { tokenDecoder } = require("../utils/JWT");
 
-const createBlog = async (req, res, next) => {
+const handleCreateBlogRequest = async (req, res, next) => {
   try {
-    const authToken = req.get("authorization");
-    const user = await tokenDecoder(authToken.split(" ")[1]);
+    const { title, content } = req.body;
 
-    const blogDto = new UserBlogRequestDto(req.body, user);
-    const newBlog = await blogService(blogDto);
-    console.log("get usernamexxxxxxxxxx", blogDto.username);
-    return res.status(201).send(newBlog);
+    const blogDto = new UserBlogRequestDto(title, content);
+
+    const user = await userServices.userFromAuthToken(
+      req.cookies["access-token"]
+    );
+
+    const isBlogCreated = await blogService.processNewBlog(user, blogDto);
+
+    if (!isBlogCreated) {
+      const error = new Error("Blog create fail");
+      error.status = 400;
+      throw error;
+    }
+    return res.status("201").send("Blog create Success !");
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
-// const getAllBlogs = async (req, res, next) => {
-//   try {
 
-//     const allBlogs = await findAllBlog();
-//     return res.status(200).send(allBlogs);
-//   } catch (error) {
+const handleGetUserAllBlogRequest = async (req, res, next) => {
+  try {
+    const user = await userServices.userFromAuthToken(
+      req.cookies["access-token"]
+    );
 
-//   }
-// };
+    const isGetUserAllBlogs = await blogService.processSpecificUserBlog(user);
+    if (!isGetUserAllBlogs) {
+      const error = new Error("Unable to process please try again");
+      error.status = 404;
+      throw error;
+    }
+    return res.status(200).send(isGetUserAllBlogs);
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = { createBlog };
+const handleGetAllBlogRequest = async (req, res, next) => {
+try {
+  const isGetAllBlogs = await blogService.processAllBlogs();
+  if (!isGetAllBlogs) {
+    const error = new Error("Page not found!");
+    error.status = 404;
+    throw error;
+  }
+  return res.status(200).send(isGetAllBlogs);
+} catch (error) {
+  next(error)
+}
+};
+
+module.exports = {
+  handleCreateBlogRequest,
+  handleGetUserAllBlogRequest,
+  handleGetAllBlogRequest,
+};

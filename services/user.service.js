@@ -126,7 +126,7 @@ const userUpdateProcess = async (userId, updatedUser) => {
 
     return isUpdated;
   } catch (error) {
-    console.log("xxxxxxxxxxxxxxxxxxxxxxx", error);
+    console.log("xxx", error);
     throw error;
   }
 };
