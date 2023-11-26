@@ -1,10 +1,11 @@
+const { where } = require("sequelize");
 const Blog = require("../models/blog.model");
 
 const createBlog = async (id, title, content) => {
   return await Blog.create({ authorId: id, title, content });
 };
 
-const findBlogById = async (id) => {
+const findBlogsById = async (id) => {
   return await Blog.findAll({ where: { authorId: id } });
 };
 
@@ -12,4 +13,18 @@ const findAllBlogs = async () => {
   return await Blog.findAll();
 };
 
-module.exports = { createBlog, findBlogById, findAllBlogs };
+const findBlogById = async (id) => {
+  return await Blog.findByPk(id);
+};
+
+const deleteBlogById = async (id, blogUUID) => {
+  return await Blog.destroy({ where: { id: blogUUID, authorId: id } });
+};
+
+module.exports = {
+  createBlog,
+  findBlogsById,
+  findAllBlogs,
+  findBlogById,
+  deleteBlogById,
+};

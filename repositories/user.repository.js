@@ -11,7 +11,6 @@ const deleteUserById = async (id) => {
 };
 
 const updatePasswordByUser = async (userid, newHashPassword) => {
-  console.log("userid , password :", userid, newHashPassword);
   return await User.update(
     { password: newHashPassword },
     { where: { id: userid } }

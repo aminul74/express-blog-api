@@ -20,8 +20,8 @@ const processNewBlog = async (user, blogDto) => {
 
 const processSpecificUserBlog = async (user) => {
   try {
-    console.log("QQQQQQQQ",user.username)
-    const processToFindAllBlog = await blogRepositories.findBlogById(user.id);
+    const processToFindAllBlog = await blogRepositories.findBlogsById(user.id);
+
     if (!processToFindAllBlog) {
       throw new Error("Please try again");
     }
@@ -31,17 +31,39 @@ const processSpecificUserBlog = async (user) => {
   }
 };
 
-
-const processAllBlogs = async(res)=>{
+const processAllBlogs = async (res) => {
   try {
     const processAllBlogs = await blogRepositories.findAllBlogs();
+
     if (!processAllBlogs) {
-      throw new Error("Something went wrong!")
+      throw new Error("Please try again!");
     }
     return processAllBlogs;
   } catch (error) {
-    throw error
+    throw error;
   }
-}
+};
 
-module.exports = { processNewBlog, processSpecificUserBlog, processAllBlogs };
+const processDeleteBlog = async (user, blogUUID) => {
+  try {
+    const processToDelete = await blogRepositories.deleteBlogById(
+      user.id,
+      blogUUID
+    );
+    if (!processToDelete) {
+      const error = new Error("Blog not found!");
+      error.status = 204;
+      throw error
+    }
+    return processToDelete;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = {
+  processNewBlog,
+  processSpecificUserBlog,
+  processAllBlogs,
+  processDeleteBlog,
+};
