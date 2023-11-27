@@ -52,12 +52,56 @@ const processDeleteBlog = async (user, blogUUID) => {
     );
     if (!processToDelete) {
       const error = new Error("Blog not found!");
-      error.status = 204;
-      throw error
+      error.status = 404;
+      throw error;
     }
     return processToDelete;
   } catch (error) {
     throw error;
+  }
+};
+
+const processBlogbyId = async (user, blogUUID) => {
+  try {
+    const processBlog = await blogRepositories.findBlogByUserId(
+      user.id,
+      blogUUID
+    );
+
+    if (!processBlog) {
+      const error = new Error("Blog not found!");
+      error.status = 404;
+      throw error;
+    }
+
+    return processBlog;
+  } catch (error) {}
+};
+
+const processUpdateBlog = async (user, blogUUID, blogDto) => {
+  try {
+    const { title, content } = blogDto;
+    const isValidBlog = await blogRepositories.findAuthorBlogById(user.id, blogUUID);
+    if (!isValidBlog) {
+      const error = new Error("Blog not found");
+      error.status = 404;
+      throw error;
+    }
+    const processToUpdateBlog = await blogRepositories.updateBlogById(
+      blogUUID,
+      title,
+      content,
+    );
+  
+    if (!processToUpdateBlog) {
+      const error = new Error("Please try again");
+      error.status = 404;
+      throw error;
+    }
+  
+    return processToUpdateBlog;
+  } catch (error) {
+   throw error 
   }
 };
 
@@ -66,4 +110,6 @@ module.exports = {
   processSpecificUserBlog,
   processAllBlogs,
   processDeleteBlog,
+  processBlogbyId,
+  processUpdateBlog,
 };

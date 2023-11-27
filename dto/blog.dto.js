@@ -1,4 +1,4 @@
-class UserBlogRequestDto {
+class BlogUpdateRequestDto {
   title;
   content;
   constructor(title, content) {
@@ -7,4 +7,4 @@ class UserBlogRequestDto {
   }
 }
 
-module.exports = { UserBlogRequestDto };
+module.exports = { BlogUpdateRequestDto };

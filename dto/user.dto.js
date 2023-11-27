@@ -16,21 +16,6 @@ class UserLoginRequestDto {
   }
 }
 
-// class UserGetRequestDto {
-//   password;
-
-//   constructor(body) {
-//     this.password;
-//   }
-// }
-// class UserDeleteRequestDto {
-//   password;
-
-//   constructor(body) {
-//     this.password;
-//   }
-// }
-
 class UserUpdateRequestDto {
   constructor(password) {
     this.password = password;

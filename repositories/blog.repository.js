@@ -21,10 +21,25 @@ const deleteBlogById = async (id, blogUUID) => {
   return await Blog.destroy({ where: { id: blogUUID, authorId: id } });
 };
 
+const findBlogByUserId = async (id, blogUUID) => {
+  return await Blog.findOne({ id: blogUUID }, { where: { authorId: id } });
+};
+
+const findAuthorBlogById = async (id, blogUUID) => {
+  return await Blog.findOne({ where: { id: blogUUID, authorId: id } });
+};
+
+const updateBlogById = async (blogUUID, title, content) => {
+  return await Blog.update({ title, content }, { where: { id: blogUUID} });
+};
+
 module.exports = {
   createBlog,
   findBlogsById,
   findAllBlogs,
   findBlogById,
   deleteBlogById,
+  findBlogByUserId,
+  updateBlogById,
+  findAuthorBlogById,
 };
