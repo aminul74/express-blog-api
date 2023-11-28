@@ -87,40 +87,42 @@ const userFromAuthToken = async (userToken) => {
   }
 };
 
-const userDeleteFromAuthToken = async (userToken) => {
-  if (!userToken) {
-    UnauthorizedError();
-  }
+const processUserDeleteById = async (user) => {
+  
   try {
-    const data = await decodeToken(userToken);
-    const user = authRepositories.deleteUserById(data.id);
+    const processToDelete = await authRepositories.deleteUserById(user.id)
 
-    if (!user) {
-      UnauthorizedError();
+    if (!processToDelete) {
+      const error = new Error("Please try again");
+      error.status = 400;
+      throw error;
     }
-
-    return user;
+    return processToDelete;
   } catch (error) {
-    console.log("error", error);
-    UnauthorizedError();
+    throw error
   }
 };
 
-const userUpdateProcess = async (userId, updatedUser) => {
+const processUserUpdate = async (user, updateUser, new_password) => {
   try {
-    const salt = await bcrypt.genSalt();
-    const newHashPassword = await bcrypt.hash(updatedUser.password, salt);
 
+    const salt = await bcrypt.genSalt();
+
+    const isValidPassword = await bcrypt.compare( updateUser.password, user.password );
+  
+    if (!isValidPassword) {
+      const error = new Error("Wrong old password!");
+      error.status = 400;
+      throw error;
+    }
+    const newHashPassword = await bcrypt.hash(new_password, salt);
     // console.log("***", newHashPassword);
 
-    const isUpdated = await authRepositories.updatePasswordByUser(
-      userId,
-      newHashPassword
-    );
+    const isUpdated = await authRepositories.updatePasswordByUser( user.id, newHashPassword );
 
     if (!isUpdated) {
       const error = new Error("Please try again");
-      error.status = 404;
+      error.status = 400;
       throw error;
     }
 
@@ -135,6 +137,6 @@ module.exports = {
   processUserLogin,
   getUserByUsername,
   userFromAuthToken,
-  userDeleteFromAuthToken,
-  userUpdateProcess,
+  processUserDeleteById,
+  processUserUpdate,
 };

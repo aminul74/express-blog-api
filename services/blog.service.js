@@ -81,7 +81,7 @@ const processBlogbyId = async (user, blogUUID) => {
 const processUpdateBlog = async (user, blogUUID, blogDto) => {
   try {
     const { title, content } = blogDto;
-    const isValidBlog = await blogRepositories.findAuthorBlogById(user.id, blogUUID);
+    const isValidBlog = await blogRepositories.findBlogByUserId(user.id, blogUUID);
     if (!isValidBlog) {
       const error = new Error("Blog not found");
       error.status = 404;

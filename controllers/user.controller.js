@@ -1,11 +1,10 @@
-const { decodeToken, createToken } = require("../utils/JWT");
+const { createToken } = require("../utils/JWT");
 const userService = require("../services/user.service");
 const {
   UserRegRequestDto,
   UserLoginRequestDto,
   UserUpdateRequestDto,
 } = require("../dto/user.dto");
-
 
 const handleUserRegistration = async (req, res, next) => {
   try {
@@ -65,10 +64,8 @@ const handleLoginRequest = async (req, res, next) => {
 
 const handleProfileGetRequest = async (req, res, next) => {
   try {
-    const userToken = req.cookies["access-token"];
-    // console.log("userToken", userToken);
 
-    const user = await userService.userFromAuthToken(userToken);
+    const user = await userService.userFromAuthToken(req.cookies["access-token"]);
 
     const userData = user.toJSON();
     return res.status(200).send({ ...userData, password: undefined });
@@ -79,18 +76,17 @@ const handleProfileGetRequest = async (req, res, next) => {
 
 const handleProfileDeletionRequest = async (req, res, next) => {
   try {
-    const userToken = req.cookies["access-token"];
+    const user = await userService.userFromAuthToken(
+      req.cookies["access-token"]
+    );
 
-    // console.log("userToken", userToken);
+    const isDeletedUser = await userService.processUserDeleteById(user);
 
-    const user = await userService.userDeleteFromAuthToken(userToken);
-
-    if (!user) {
-      const error = new Error("Unable to delete");
-      error.status = 404;
+    if (!isDeletedUser) {
+      const error = new Error("Unable to delete!");
+      error.status = 400;
       throw error;
     }
-
     return res.status(200).send("Delete Success!");
   } catch (error) {
     next(error);
@@ -99,18 +95,19 @@ const handleProfileDeletionRequest = async (req, res, next) => {
 
 const handlePasswordUpdateRequest = async (req, res, next) => {
   try {
+    const { old_password, new_password } = req.body;
+    console.log("test###", new_password);
+
     const user = await userService.userFromAuthToken(
       req.cookies["access-token"]
     );
 
-    const { password } = req.body;
-    // console.log("userToken", userToken);
-
-    const userDto = new UserUpdateRequestDto(password);
+    const userDto = new UserUpdateRequestDto(old_password);
     // console.log("check**:",userDto)
-    const isPasswordUpdate = await userService.userUpdateProcess(
-      user.id,
-      userDto
+    const isPasswordUpdate = await userService.processUserUpdate(
+      user,
+      userDto,
+      new_password
     );
     if (!isPasswordUpdate) {
       const error = new Error("Unable to update password please try again!");

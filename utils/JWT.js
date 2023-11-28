@@ -11,7 +11,7 @@ const createToken = (userId) => {
 
 const decodeToken = async (token) => {
   try {
-    return verify(token, TOKEN_KEY); // { id: userId }
+    return verify(token, TOKEN_KEY); 
   } catch (error) {
     throw error;
   }

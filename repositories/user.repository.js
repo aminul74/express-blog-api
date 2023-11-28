@@ -10,10 +10,10 @@ const deleteUserById = async (id) => {
   });
 };
 
-const updatePasswordByUser = async (userid, newHashPassword) => {
+const updatePasswordByUser = async (userId, newHashPassword) => {
   return await User.update(
     { password: newHashPassword },
-    { where: { id: userid } }
+    { where: { id: userId }, }
   );
 };
 

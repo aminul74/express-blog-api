@@ -22,11 +22,7 @@ const deleteBlogById = async (id, blogUUID) => {
 };
 
 const findBlogByUserId = async (id, blogUUID) => {
-  return await Blog.findOne({ id: blogUUID }, { where: { authorId: id } });
-};
-
-const findAuthorBlogById = async (id, blogUUID) => {
-  return await Blog.findOne({ where: { id: blogUUID, authorId: id } });
+  return await Blog.findOne({ where: {id: blogUUID, authorId: id } });
 };
 
 const updateBlogById = async (blogUUID, title, content) => {
@@ -40,6 +36,5 @@ module.exports = {
   findBlogById,
   deleteBlogById,
   findBlogByUserId,
-  updateBlogById,
-  findAuthorBlogById,
+  updateBlogById
 };

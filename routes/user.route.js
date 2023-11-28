@@ -7,5 +7,5 @@ router.post("/register", validate.validateSignup, controller.handleUserRegistrat
 router.post("/login", validate.validateLogin, controller.handleLoginRequest);
 router.get("/my-profile", controller.handleProfileGetRequest);
 router.delete("/delete", controller.handleProfileDeletionRequest);
-router.put("/update-password", controller.handlePasswordUpdateRequest);
+router.put("/update-password",validate.validateUpdate,controller.handlePasswordUpdateRequest);
 module.exports = router;

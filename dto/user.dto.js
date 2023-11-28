@@ -17,8 +17,8 @@ class UserLoginRequestDto {
 }
 
 class UserUpdateRequestDto {
-  constructor(password) {
-    this.password = password;
+  constructor(old_password) {
+    this.password = old_password;
   }
 }
 
