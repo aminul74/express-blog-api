@@ -22,11 +22,11 @@ const deleteBlogById = async (id, blogUUID) => {
 };
 
 const findBlogByUserId = async (id, blogUUID) => {
-  return await Blog.findOne({ where: {id: blogUUID, authorId: id } });
+  return await Blog.findOne({ where: { id: blogUUID, authorId: id } });
 };
 
 const updateBlogById = async (blogUUID, title, content) => {
-  return await Blog.update({ title, content }, { where: { id: blogUUID} });
+  return await Blog.update({ title, content }, { where: { id: blogUUID } });
 };
 
 module.exports = {
@@ -36,5 +36,5 @@ module.exports = {
   findBlogById,
   deleteBlogById,
   findBlogByUserId,
-  updateBlogById
+  updateBlogById,
 };
