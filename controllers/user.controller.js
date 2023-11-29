@@ -115,6 +115,13 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
       throw error;
     }
 
+    const userUpdateToken = createToken(isPasswordUpdate.id);
+
+    res.cookie("access-token", userUpdateToken, {
+      maxAge: -1,
+    });
+
+
     return res.status(200).send("Password update success!");
   } catch (error) {
     next(error);
