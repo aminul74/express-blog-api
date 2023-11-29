@@ -117,7 +117,7 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
 
     const userUpdateToken = createToken(isPasswordUpdate.id);
 
-    res.cookie("access-token", userUpdateToken, {
+    res.cookie("access-token", "", {
       maxAge: -1,
     });
 
