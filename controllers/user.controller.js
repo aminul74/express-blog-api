@@ -66,8 +66,7 @@ const handleProfileGetRequest = async (req, res, next) => {
     );
 
     const user = userData.toJSON();
-
-    return res.status(200).send(user);
+    return res.status(200).send({...user, password: undefined});
   } catch (error) {
     next(error);
   }
