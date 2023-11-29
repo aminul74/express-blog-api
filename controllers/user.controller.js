@@ -1,17 +1,13 @@
 const { createToken } = require("../utils/JWT");
 const userService = require("../services/user.service");
 
-const {
-  UserRegRequestDto,
-  UserLoginRequestDto,
-  UserUpdateRequestDto,
-} = require("../dto/user.dto");
+const UserDtoFilter = require("../dto/user.dto");
 
 const handleUserRegistration = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
-    const user = new UserRegRequestDto(username, email, password);
+    const user = new UserDtoFilter.UserRegRequestDto(username, email, password);
 
     const responseData = await userService.processUserRegistration(
       user.username,
@@ -38,7 +34,7 @@ const handleUserRegistration = async (req, res, next) => {
 const handleLoginRequest = async (req, res, next) => {
   try {
     const { username, password } = req.body;
-    const userDto = new UserLoginRequestDto(username, password);
+    const userDto = new UserDtoFilter.UserLoginRequestDto(username, password);
 
     const isMatchedUsernamePassword = await userService.processUserLogin(
       //CheckUsernameAndPassword
@@ -99,14 +95,14 @@ const handleProfileDeletionRequest = async (req, res, next) => {
 const handlePasswordUpdateRequest = async (req, res, next) => {
   try {
     const { old_password, new_password } = req.body;
-    console.log("test###", new_password);
+    // console.log("test###", new_password);
 
     const user = await userService.userFromAuthToken(
       req.cookies["access-token"]
     );
+    console.log("check**:", [user].id);
+    const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 
-    const userDto = new UserUpdateRequestDto(old_password);
-    // console.log("check**:",userDto)
     const isPasswordUpdate = await userService.processUserUpdate(
       user,
       userDto,
@@ -118,9 +114,7 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
       throw error;
     }
 
-    const userUpdateToken = createToken(isPasswordUpdate.id);
-
-    res.cookie("access-token", "", {
+    res.cookie("access-token", " ", {
       maxAge: -1,
     });
 

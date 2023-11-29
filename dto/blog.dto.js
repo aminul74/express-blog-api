@@ -1,3 +1,12 @@
+class BlogCreateRequestDto {
+  title;
+  content;
+  constructor(title, content) {
+    this.title = title;
+    this.content = content;
+  }
+}
+
 class BlogUpdateRequestDto {
   title;
   content;
@@ -7,4 +16,4 @@ class BlogUpdateRequestDto {
   }
 }
 
-module.exports = { BlogUpdateRequestDto };
+module.exports = {BlogCreateRequestDto, BlogUpdateRequestDto };

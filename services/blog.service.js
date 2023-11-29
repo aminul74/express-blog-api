@@ -1,5 +1,4 @@
 const blogRepositories = require("../repositories/blog.repository");
-const userServices = require("../services/user.service");
 
 const processNewBlog = async (user, blogDto) => {
   try {
@@ -31,9 +30,9 @@ const processSpecificUserBlog = async (user) => {
   }
 };
 
-const processAllBlogs = async (res) => {
+const processAllBlogs = async (page, size) => {
   try {
-    const processAllBlogs = await blogRepositories.findAllBlogs();
+    const processAllBlogs = await blogRepositories.findAllBlogs(page, size);
 
     if (!processAllBlogs) {
       throw new Error("Please try again!");

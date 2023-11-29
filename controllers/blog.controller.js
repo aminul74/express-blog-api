@@ -1,12 +1,13 @@
 const blogService = require("../services/blog.service");
 const userServices = require("../services/user.service");
-const { BlogUpdateRequestDto } = require("../dto/blog.dto");
+const BlogDto = require("../dto/blog.dto");
 const { getContentBasedOnNegotiation } = require("../utils/responseType");
+
 const handleCreateBlogRequest = async (req, res, next) => {
   try {
     const { title, content } = req.body;
 
-    const blogDto = new BlogUpdateRequestDto(title, content);
+    const blogDto = new BlogDto.BlogCreateRequestDto(title, content);
 
     const user = await userServices.userFromAuthToken(
       req.cookies["access-token"]
@@ -55,7 +56,20 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
 
 const handleGetAllBlogsRequest = async (req, res, next) => {
   try {
-    const isGetAllBlogs = await blogService.processAllBlogs();
+    const pageAsNumber = Number.parseInt(req.query.page);
+    const sizeAsNumber = Number.parseInt(req.query.size);
+
+    let page = 0;
+    if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
+      page = pageAsNumber;
+    }
+
+    let size = 5;
+    if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 5) {
+      size = sizeAsNumber;
+    }
+
+    const isGetAllBlogs = await blogService.processAllBlogs(page, size);
     if (!isGetAllBlogs) {
       const error = new Error("Page not found!");
       error.status = 404;
@@ -70,7 +84,12 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
     res.type(negotiate);
     const response = getContentBasedOnNegotiation(isGetAllBlogs, negotiate);
 
-    return res.status(200).send(response);
+    return res
+      .status(200)
+      .send({
+        content: response.rows,
+        totalpages: Math.ceil(response.count / size),
+      });
   } catch (error) {
     next(error);
   }
@@ -130,7 +149,7 @@ const handleBlogByIdRequest = async (req, res, next) => {
 const handleUpdateBlogRequest = async (req, res, next) => {
   try {
     const { title, content } = req.body;
-    const blogDto = new BlogUpdateRequestDto(title, content);
+    const blogDto = new BlogDto.BlogUpdateRequestDto(title, content);
     const blogUUID = req.params.uuid;
     const user = await userServices.userFromAuthToken(
       req.cookies["access-token"]

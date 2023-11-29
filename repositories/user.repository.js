@@ -1,8 +1,8 @@
 const User = require("../models/user.model");
 
 const getUserById = async (id) => {
-  return await User.findByPk(id,{
-    attributes: ['id', 'username', 'email',]
+  return await User.findByPk(id, {
+    attributes: ["id", "username", "email", "password"],
   });
 };
 
@@ -15,7 +15,7 @@ const deleteUserById = async (id) => {
 const updatePasswordByUser = async (userId, newHashPassword) => {
   return await User.update(
     { password: newHashPassword },
-    { where: { id: userId }, }
+    { where: { id: userId } }
   );
 };
 
