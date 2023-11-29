@@ -1,5 +1,6 @@
 const { createToken } = require("../utils/JWT");
 const userService = require("../services/user.service");
+
 const {
   UserRegRequestDto,
   UserLoginRequestDto,
@@ -64,11 +65,13 @@ const handleLoginRequest = async (req, res, next) => {
 
 const handleProfileGetRequest = async (req, res, next) => {
   try {
+    const userData = await userService.userFromAuthToken(
+      req.cookies["access-token"]
+    );
 
-    const user = await userService.userFromAuthToken(req.cookies["access-token"]);
+    const user = userData.toJSON();
 
-    const userData = user.toJSON();
-    return res.status(200).send({ ...userData, password: undefined });
+    return res.status(200).send(user);
   } catch (error) {
     next(error);
   }
@@ -120,7 +123,6 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
     res.cookie("access-token", "", {
       maxAge: -1,
     });
-
 
     return res.status(200).send("Password update success!");
   } catch (error) {

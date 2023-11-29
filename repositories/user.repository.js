@@ -1,7 +1,9 @@
 const User = require("../models/user.model");
 
 const getUserById = async (id) => {
-  return await User.findByPk(id);
+  return await User.findByPk(id,{
+    attributes: ['id', 'username', 'email',]
+  });
 };
 
 const deleteUserById = async (id) => {

@@ -1,7 +1,7 @@
 const blogService = require("../services/blog.service");
 const userServices = require("../services/user.service");
 const { BlogUpdateRequestDto } = require("../dto/blog.dto");
-
+const { getContentBasedOnNegotiation } = require("../utils/responseType");
 const handleCreateBlogRequest = async (req, res, next) => {
   try {
     const { title, content } = req.body;
@@ -25,7 +25,7 @@ const handleCreateBlogRequest = async (req, res, next) => {
   }
 };
 
-const handleGetUserAllBlogRequest = async (req, res, next) => {
+const handleGetUserSelfBlogRequest = async (req, res, next) => {
   try {
     const user = await userServices.userFromAuthToken(
       req.cookies["access-token"]
@@ -37,13 +37,23 @@ const handleGetUserAllBlogRequest = async (req, res, next) => {
       error.status = 404;
       throw error;
     }
-    return res.status(200).send(isGetUserAllBlogs);
+
+    const negotiate = req.accepts(["json", "text", "xml", "html"]);
+
+    if (!negotiate) {
+      return res.status(406).send("Not Acceptable");
+    }
+
+    res.type(negotiate);
+    const response = getContentBasedOnNegotiation(isGetUserAllBlogs, negotiate);
+
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
 };
 
-const handleGetAllBlogRequest = async (req, res, next) => {
+const handleGetAllBlogsRequest = async (req, res, next) => {
   try {
     const isGetAllBlogs = await blogService.processAllBlogs();
     if (!isGetAllBlogs) {
@@ -51,7 +61,16 @@ const handleGetAllBlogRequest = async (req, res, next) => {
       error.status = 404;
       throw error;
     }
-    return res.status(200).send(isGetAllBlogs);
+    const negotiate = req.accepts(["json", "text", "xml", "html"]);
+
+    if (!negotiate) {
+      return res.status(406).send("Not Acceptable");
+    }
+
+    res.type(negotiate);
+    const response = getContentBasedOnNegotiation(isGetAllBlogs, negotiate);
+
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
@@ -91,7 +110,18 @@ const handleBlogByIdRequest = async (req, res, next) => {
       error.status = 404;
       throw error;
     }
-    return res.status(200).send(isGetBlogById);
+    const getBlogById = [isGetBlogById];
+
+    const negotiate = req.accepts(["json", "text", "xml", "html"]);
+
+    if (!negotiate) {
+      return res.status(406).send("Not Acceptable");
+    }
+
+    res.type(negotiate);
+    const response = getContentBasedOnNegotiation(getBlogById, negotiate);
+
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
@@ -116,7 +146,7 @@ const handleUpdateBlogRequest = async (req, res, next) => {
       error.status = 404;
       throw error;
     }
-    return res.status(200).send("Update success!")
+    return res.status(200).send("Update success!");
   } catch (error) {
     next(error);
   }
@@ -124,8 +154,8 @@ const handleUpdateBlogRequest = async (req, res, next) => {
 
 module.exports = {
   handleCreateBlogRequest,
-  handleGetUserAllBlogRequest,
-  handleGetAllBlogRequest,
+  handleGetUserSelfBlogRequest,
+  handleGetAllBlogsRequest,
   handleBlogDeletionRequest,
   handleBlogByIdRequest,
   handleUpdateBlogRequest,

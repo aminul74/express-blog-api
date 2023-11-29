@@ -6,7 +6,7 @@ const createBlog = async (id, title, content) => {
 };
 
 const findBlogsById = async (id) => {
-  return await Blog.findAll({ where: { authorId: id } });
+  return await Blog.findAll({ where: { authorId: id },attributes: ['id', 'title', 'content'] });
 };
 
 const findAllBlogs = async () => {
@@ -22,7 +22,7 @@ const deleteBlogById = async (id, blogUUID) => {
 };
 
 const findBlogByUserId = async (id, blogUUID) => {
-  return await Blog.findOne({ where: { id: blogUUID, authorId: id } });
+  return await Blog.findOne({ where: { id: blogUUID, authorId: id },attributes: ['id', 'title', 'content'] });
 };
 
 const updateBlogById = async (blogUUID, title, content) => {
