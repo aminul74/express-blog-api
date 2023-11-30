@@ -99,7 +99,7 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
     const user = await userService.userFromAuthToken(
       req.cookies["access-token"]
     );
-    console.log("check**:", [user].id);
+    // console.log("check**:", [user].id);
     const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 
     const isPasswordUpdate = await userService.processUserUpdate(

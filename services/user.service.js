@@ -105,7 +105,7 @@ const processUserDeleteById = async (user) => {
 
 const processUserUpdate = async (user, updateUser, new_password) => {
   try {
-    console.log("COMPARE :", user.password)
+    
     const salt = await bcrypt.genSalt();
 
     const isValidPassword = await bcrypt.compare( updateUser.password, user.password );

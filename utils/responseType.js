@@ -5,7 +5,10 @@ const getContentBasedOnNegotiation = (blogs, negotiate) => {
   switch (negotiate) {
     case "text":
       const textData = blogs
-        .map((blogs) => `${blogs.title}\n${blogs.content}\n`)
+        .map((blog) => `
+        id: ${blog.id}
+        title: ${blog.title}
+        content: ${blog.content}`)
         .join("\n");
       result = textData;
       break;
@@ -15,10 +18,10 @@ const getContentBasedOnNegotiation = (blogs, negotiate) => {
     case "html":
       const htmldata = blogs
         .map(
-          (blogs) =>
-            `<div><strong>${blogs.id}</strong>
-              <strong>${blogs.title}</strong>
-              <p>${blogs.content}</p></div>`
+          (blog) =>
+            `<div><strong>${blog.id}</strong>
+              <strong>${blog.title}</strong>
+              <p>${blog.content}</p></div>`
         )
         .join("");
       result = htmldata;
