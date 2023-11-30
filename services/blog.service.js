@@ -32,7 +32,20 @@ const processSpecificUserBlog = async (user) => {
 
 const processAllBlogs = async (page, size) => {
   try {
-    const processAllBlogs = await blogRepositories.findAllBlogs(page, size);
+    let pageNo = page;
+    let numOfContent = size;
+
+    const numOfBlogs = await blogRepositories.countBlogs();
+    const pageLimit = Math.ceil(numOfBlogs / numOfContent);
+
+    if (pageNo >= pageLimit) {
+      pageNo = 1;
+      numOfContent = 5;
+    }
+    const processAllBlogs = await blogRepositories.findAllBlogs(
+      pageNo,
+      numOfContent
+    );
 
     if (!processAllBlogs) {
       throw new Error("Please try again!");
@@ -60,12 +73,9 @@ const processDeleteBlog = async (user, blogUUID) => {
   }
 };
 
-const processBlogbyId = async (user, blogUUID) => {
+const processBlogbyId = async (blogUUID) => {
   try {
-    const processBlog = await blogRepositories.findBlogByUserId(
-      user.id,
-      blogUUID
-    );
+    const processBlog = await blogRepositories.findBlogByUUId(blogUUID);
 
     if (!processBlog) {
       const error = new Error("Blog not found!");
@@ -80,7 +90,10 @@ const processBlogbyId = async (user, blogUUID) => {
 const processUpdateBlog = async (user, blogUUID, blogDto) => {
   try {
     const { title, content } = blogDto;
-    const isValidBlog = await blogRepositories.findBlogByUserId(user.id, blogUUID);
+    const isValidBlog = await blogRepositories.findBlogByAuthUser(
+      user.id,
+      blogUUID
+    );
     if (!isValidBlog) {
       const error = new Error("Blog not found");
       error.status = 404;
@@ -89,18 +102,18 @@ const processUpdateBlog = async (user, blogUUID, blogDto) => {
     const processToUpdateBlog = await blogRepositories.updateBlogById(
       blogUUID,
       title,
-      content,
+      content
     );
-  
+
     if (!processToUpdateBlog) {
       const error = new Error("Please try again");
       error.status = 404;
       throw error;
     }
-  
+
     return processToUpdateBlog;
   } catch (error) {
-   throw error 
+    throw error;
   }
 };
 

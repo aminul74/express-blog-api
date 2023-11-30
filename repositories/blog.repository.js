@@ -12,8 +12,12 @@ const findBlogsById = async (id) => {
   });
 };
 
+const countBlogs = async () =>{
+  const noOfBlogs = await Blog.count();
+  return noOfBlogs;
+}
 const findAllBlogs = async (page, size) => {
-  return await Blog.findAndCountAll({
+  return await Blog.findAll({
     limit: size,
     offset: page * size,
   });
@@ -27,7 +31,14 @@ const deleteBlogById = async (id, blogUUID) => {
   return await Blog.destroy({ where: { id: blogUUID, authorId: id } });
 };
 
-const findBlogByUserId = async (id, blogUUID) => {
+const findBlogByUUId = async (blogUUID) => {
+  return await Blog.findOne({
+    where: { id: blogUUID },
+    attributes: ["id", "title", "content"],
+  });
+};
+
+const findBlogByAuthUser = async (id, blogUUID) => {
   return await Blog.findOne({
     where: { id: blogUUID, authorId: id },
     attributes: ["id", "title", "content"],
@@ -44,6 +55,8 @@ module.exports = {
   findAllBlogs,
   findBlogById,
   deleteBlogById,
-  findBlogByUserId,
+  findBlogByUUId,
   updateBlogById,
+  findBlogByAuthUser,
+  countBlogs,
 };

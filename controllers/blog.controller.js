@@ -70,6 +70,7 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
     }
 
     const isGetAllBlogs = await blogService.processAllBlogs(page, size);
+
     if (!isGetAllBlogs) {
       const error = new Error("Page not found!");
       error.status = 404;
@@ -83,13 +84,12 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
 
     res.type(negotiate);
     const response = getContentBasedOnNegotiation(isGetAllBlogs, negotiate);
-
-    return res
-      .status(200)
-      .send({
-        content: response.rows,
-        totalpages: Math.ceil(response.count / size),
-      });
+    if (!response) {
+      const error = new Error("No response");
+      error.status = 400;
+      throw error;
+    }
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
@@ -118,11 +118,11 @@ const handleBlogDeletionRequest = async (req, res, next) => {
 const handleBlogByIdRequest = async (req, res, next) => {
   try {
     const blogUUID = req.params.uuid;
-    const user = await userServices.userFromAuthToken(
-      req.cookies["access-token"]
-    );
+    // const user = await userServices.userFromAuthToken(
+    //   req.cookies["access-token"]
+    // );
 
-    const isGetBlogById = await blogService.processBlogbyId(user, blogUUID);
+    const isGetBlogById = await blogService.processBlogbyId(blogUUID);
 
     if (!isGetBlogById) {
       const error = new Error("Unable to process! Please try again");
