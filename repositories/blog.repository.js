@@ -1,4 +1,3 @@
-// const { where } = require("sequelize");
 const Blog = require("../models/blog.model");
 
 const createBlog = async (id, title, content) => {
@@ -12,10 +11,10 @@ const findBlogsById = async (id) => {
   });
 };
 
-const countBlogs = async () =>{
+const countBlogs = async () => {
   const noOfBlogs = await Blog.count();
   return noOfBlogs;
-}
+};
 const findAllBlogs = async (page, size) => {
   return await Blog.findAll({
     limit: size,

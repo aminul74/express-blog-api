@@ -15,8 +15,7 @@ const loginSchema = yup.object({
 const passUpdateSchema = yup.object({
   old_password: yup.string().min(4).max(10).required(),
   new_password: yup.string().min(4).max(10).required(),
-
-})
+});
 
 const validateSignup = validate(signupSchema);
 
@@ -27,5 +26,5 @@ const validateUpdate = validate(passUpdateSchema);
 module.exports = {
   validateSignup,
   validateLogin,
-  validateUpdate
+  validateUpdate,
 };

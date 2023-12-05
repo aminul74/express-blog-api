@@ -4,67 +4,51 @@ const { UnauthorizedError } = require("../utils/errors");
 const { decodeToken } = require("../utils/JWT");
 
 const processUserRegistration = async (username, email, password) => {
-  try {
-    const checkEmail = await authRepositories.findEmailByUserEmail(email);
+  const checkEmail = await authRepositories.findEmailByUserEmail(email);
 
-    if (checkEmail) {
-      const error = new Error("You are already registerd !");
-      error.status = 409;
-      throw error;
-    }
-
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
-
-    const createNewUser = await authRepositories.createUser(
-      username,
-      email,
-      (password = hashPassword)
-    );
-
-    if (!createNewUser) {
-      throw error;
-    }
-
-    return createNewUser;
-  } catch (error) {
+  if (checkEmail) {
+    const error = new Error("You are already registerd !");
+    error.status = 409;
     throw error;
   }
+
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
+
+  const createNewUser = await authRepositories.createUser(
+    username,
+    email,
+    (password = hashPassword)
+  );
+
+  return createNewUser;
 };
 
 const processUserLogin = async (username, password) => {
-  try {
-    const checkUserName = await authRepositories.loginUser(username);
+  const checkUserName = await authRepositories.loginUser(username);
 
-    if (!checkUserName) {
-      const error = new Error("Username not found");
-      error.status = 404;
-      throw error;
-    }
-    const isValid = await bcrypt.compare(password, checkUserName.password);
-
-    if (!isValid) {
-      const error = new Error("Wrong password");
-      error.status = 401;
-      throw error;
-    }
-
-    return isValid;
-  } catch (error) {
+  if (!checkUserName) {
+    const error = new Error("Username not found");
+    error.status = 404;
     throw error;
   }
+  const isValid = await bcrypt.compare(password, checkUserName.password);
+
+  if (!isValid) {
+    const error = new Error("Wrong password");
+    error.status = 401;
+    throw error;
+  }
+
+  return isValid;
 };
 
 const getUserByUsername = async (username) => {
-  try {
-    const user = await authRepositories.getUserByUsername(username);
-    if (!user) {
-      throw new Error("Something went wrong, please try again!");
-    }
-    return user;
-  } catch (error) {
+  const user = await authRepositories.getUserByUsername(username);
+  if (!user) {
     throw new Error("Something went wrong, please try again!");
   }
+  return user;
 };
 
 const userFromAuthToken = async (userToken) => {
@@ -73,7 +57,7 @@ const userFromAuthToken = async (userToken) => {
   }
   try {
     const data = await decodeToken(userToken);
-    // console.log("token decode", data);
+
     const user = authRepositories.getUserById(data.id);
 
     if (!user) {
@@ -88,48 +72,43 @@ const userFromAuthToken = async (userToken) => {
 };
 
 const processUserDeleteById = async (user) => {
-  
-  try {
-    const processToDelete = await authRepositories.deleteUserById(user.id)
+  const processToDelete = await authRepositories.deleteUserById(user.id);
 
-    if (!processToDelete) {
-      const error = new Error("Please try again");
-      error.status = 400;
-      throw error;
-    }
-    return processToDelete;
-  } catch (error) {
-    throw error
+  if (!processToDelete) {
+    const error = new Error("Please try again");
+    error.status = 400;
+    throw error;
   }
+  return processToDelete;
 };
 
 const processUserUpdate = async (user, updateUser, new_password) => {
-  try {
-    
-    const salt = await bcrypt.genSalt();
+  const salt = await bcrypt.genSalt();
 
-    const isValidPassword = await bcrypt.compare( updateUser.password, user.password );
-  
-    if (!isValidPassword) {
-      const error = new Error("Wrong old password!");
-      error.status = 400;
-      throw error;
-    }
-    const newHashPassword = await bcrypt.hash(new_password, salt);
-    // console.log("***", newHashPassword);
+  const isValidPassword = await bcrypt.compare(
+    updateUser.password,
+    user.password
+  );
 
-    const isUpdated = await authRepositories.updatePasswordByUser( user.id, newHashPassword );
-
-    if (!isUpdated) {
-      const error = new Error("Please try again");
-      error.status = 400;
-      throw error;
-    }
-
-    return isUpdated;
-  } catch (error) {
+  if (!isValidPassword) {
+    const error = new Error("Wrong old password!");
+    error.status = 400;
     throw error;
   }
+  const newHashPassword = await bcrypt.hash(new_password, salt);
+
+  const isUpdated = await authRepositories.updatePasswordByUser(
+    user.id,
+    newHashPassword
+  );
+
+  if (!isUpdated) {
+    const error = new Error("Please try again");
+    error.status = 400;
+    throw error;
+  }
+
+  return isUpdated;
 };
 
 module.exports = {

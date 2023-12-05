@@ -4,19 +4,20 @@ const getContentBasedOnNegotiation = (blogs, negotiate) => {
 
   switch (negotiate) {
     case "text":
-      const textData = blogs
-        .map((blog) => `
+      result = blogs
+        .map(
+          (blog) => `
         id: ${blog.id}
         title: ${blog.title}
-        content: ${blog.content}`)
+        content: ${blog.content}`
+        )
         .join("\n");
-      result = textData;
       break;
     case "json":
       result = blogs;
       break;
     case "html":
-      const htmldata = blogs
+      result = blogs
         .map(
           (blog) =>
             `<div><strong>${blog.id}</strong>
@@ -24,9 +25,8 @@ const getContentBasedOnNegotiation = (blogs, negotiate) => {
               <p>${blog.content}</p></div>`
         )
         .join("");
-      result = htmldata;
       break;
-    case "xml":
+    case "xml": {
       const xmlBuilder = new xml2js.Builder();
       const xmlData = xmlBuilder.buildObject({
         blogs: {
@@ -40,6 +40,7 @@ const getContentBasedOnNegotiation = (blogs, negotiate) => {
 
       result = xmlData;
       break;
+    }
 
     default:
       throw new Error("Not Acceptable");

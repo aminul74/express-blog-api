@@ -66,7 +66,7 @@ const handleProfileGetRequest = async (req, res, next) => {
     );
 
     const user = userData.toJSON();
-    return res.status(200).send({...user, password: undefined});
+    return res.status(200).send({ ...user, password: undefined });
   } catch (error) {
     next(error);
   }
@@ -94,12 +94,10 @@ const handleProfileDeletionRequest = async (req, res, next) => {
 const handlePasswordUpdateRequest = async (req, res, next) => {
   try {
     const { old_password, new_password } = req.body;
-    // console.log("test###", new_password);
 
     const user = await userService.userFromAuthToken(
       req.cookies["access-token"]
     );
-    // console.log("check**:", [user].id);
     const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 
     const isPasswordUpdate = await userService.processUserUpdate(

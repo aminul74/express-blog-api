@@ -10,11 +10,7 @@ const createToken = (userId) => {
 };
 
 const decodeToken = async (token) => {
-  try {
-    return verify(token, TOKEN_KEY); 
-  } catch (error) {
-    throw error;
-  }
+  return verify(token, TOKEN_KEY);
 };
 
 module.exports = { createToken, decodeToken };
