@@ -43,17 +43,17 @@ const handleLoginRequest = async (req, res, next) => {
     );
 
     if (!isMatchedUsernamePassword) {
-      throw new Error("Login Failed");
+      throw new Error("Username or password is incorrect.");
     }
 
     const user = await userService.getUserByUsername(userDto.username);
-    // console.log("xxx", user, userDto.username);
 
     const userLoginToken = createToken(user.id);
 
     res.cookie("access-token", userLoginToken, { maxAge: 30 * 24 * 60 * 60 });
 
-    return res.status(200).send("Login Success!");
+    res.status(200);
+    res.send("Login Success!");
   } catch (error) {
     next(error);
   }
@@ -64,7 +64,7 @@ const handleProfileGetRequest = async (req, res, next) => {
     const userData = await userService.userFromAuthToken(
       req.cookies["access-token"]
     );
-
+    // console.log("ZZZ", userData);
     const user = userData.toJSON();
     return res.status(200).send({ ...user, password: undefined });
   } catch (error) {
