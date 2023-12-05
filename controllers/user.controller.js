@@ -85,6 +85,7 @@ const handleProfileDeletionRequest = async (req, res, next) => {
       error.status = 400;
       throw error;
     }
+
     return res.status(200).send("Delete Success!");
   } catch (error) {
     next(error);
