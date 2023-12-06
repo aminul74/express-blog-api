@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "lint": "npx eslint .",
-    "test": "jest --watchAll",
+    "test": "jest --watchAll --verbose",
     "dev": "nodemon server.js"
   },
   "keywords": [],

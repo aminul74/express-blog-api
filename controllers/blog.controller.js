@@ -8,7 +8,6 @@ const handleCreateBlogRequest = async (req, res, next) => {
     const { title, content } = req.body;
 
     const blogDto = new BlogDto.BlogCreateRequestDto(title, content);
-
     const user = await userServices.userFromAuthToken(
       req.cookies["access-token"]
     );
@@ -33,6 +32,9 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
     );
 
     const isGetUserAllBlogs = await blogService.processSpecificUserBlog(user);
+
+    // console.log("XX", isGetUserAllBlogs);
+
     if (!isGetUserAllBlogs) {
       const error = new Error("Unable to process please try again");
       error.status = 404;
@@ -47,7 +49,7 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
 
     res.type(negotiate);
     const response = getContentBasedOnNegotiation(isGetUserAllBlogs, negotiate);
-
+    // console.log("WWWWW",response )
     return res.status(200).send(response);
   } catch (error) {
     next(error);
@@ -118,9 +120,6 @@ const handleBlogDeletionRequest = async (req, res, next) => {
 const handleBlogByIdRequest = async (req, res, next) => {
   try {
     const blogUUID = req.params.uuid;
-    // const user = await userServices.userFromAuthToken(
-    //   req.cookies["access-token"]
-    // );
 
     const isGetBlogById = await blogService.processBlogbyId(blogUUID);
 

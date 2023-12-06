@@ -103,9 +103,10 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
 
     const isPasswordUpdate = await userService.processUserUpdate(
       user,
-      userDto,
+      userDto, // { password: "oldPass" },
       new_password
     );
+
     if (!isPasswordUpdate) {
       const error = new Error("Unable to update password please try again!");
       error.status = 404;
