@@ -210,48 +210,6 @@ describe("User Controllers", () => {
     });
   });
 
-  // describe("ProfileDeletionRequest", () => {
-  //   it("Test case 1: Profile Delete success!", async () => {
-  //     // Arrange
-  //     const req = {
-  //       cookies: {
-  //         "access-token": "fake-token",
-  //       },
-  //     };
-
-  //     const res = {
-  //       status: jest.fn().mockReturnThis(),
-  //       send: jest.fn(),
-  //     };
-
-  //     const next = jest.fn();
-  //     const fakeUserData = {
-  //       id: "userFakeId",
-  //     };
-
-  //     // Mock
-  //     userService.userFromAuthToken.mockResolvedValue(fakeUserData);
-  //     userService.processUserDeleteById.mockResolvedValue(fakeUserData);
-
-  //     // Act
-  //     await handleProfileDeletionRequest(req, res, next);
-
-  //     // Assert
-  //     expect(userService.userFromAuthToken).toHaveBeenCalledWith(
-  //       req.cookies["access-token"]
-  //     );
-
-  //     expect(userService.processUserDeleteById).toHaveBeenCalledWith(
-  //       fakeUserData
-  //     );
-
-  //     expect(res.status).toHaveBeenLastCalledWith(200);
-  //     expect(res.send).toHaveBeenCalledWith("Delete Success!");
-
-  //     expect(next).not.toHaveBeenCalled();
-  //   });
-  // });
-
   describe("ProfileDeletionRequest", () => {
     it("Test case 1: Profile Delete success!", async () => {
       // Arrange
