@@ -1,63 +1,6 @@
-const { createToken } = require("../utils/JWT");
 const userService = require("../services/user.service");
 
 const UserDtoFilter = require("../dto/user.dto");
-
-const handleUserRegistration = async (req, res, next) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const user = new UserDtoFilter.UserRegRequestDto(username, email, password);
-
-    const responseData = await userService.processUserRegistration(
-      user.username,
-      user.email,
-      user.password
-    );
-
-    if (!responseData) {
-      throw new Error("Signup Failed");
-    }
-
-    const userRegistrationToken = createToken(responseData.id);
-
-    res.cookie("access-token", userRegistrationToken, {
-      maxAge: 30 * 24 * 60 * 60,
-    });
-
-    return res.status(201).send("Signup Success!");
-  } catch (error) {
-    next(error);
-  }
-};
-
-const handleLoginRequest = async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-    const userDto = new UserDtoFilter.UserLoginRequestDto(username, password);
-
-    const isMatchedUsernamePassword = await userService.processUserLogin(
-      //CheckUsernameAndPassword
-      userDto.username,
-      userDto.password
-    );
-
-    if (!isMatchedUsernamePassword) {
-      throw new Error("Username or password is incorrect.");
-    }
-
-    const user = await userService.getUserByUsername(userDto.username);
-
-    const userLoginToken = createToken(user.id);
-
-    res.cookie("access-token", userLoginToken, { maxAge: 30 * 24 * 60 * 60 });
-
-    res.status(200);
-    res.send("Login Success!");
-  } catch (error) {
-    next(error);
-  }
-};
 
 const handleProfileGetRequest = async (req, res, next) => {
   try {
@@ -124,8 +67,6 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
 };
 
 module.exports = {
-  handleUserRegistration,
-  handleLoginRequest,
   handleProfileDeletionRequest,
   handleProfileGetRequest,
   handlePasswordUpdateRequest,

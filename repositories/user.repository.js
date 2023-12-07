@@ -23,23 +23,23 @@ const getUserByUsername = (username) => {
   return User.findOne({ where: { username } });
 };
 
-const findEmailByUserEmail = async (email) => {
-  return await User.findOne({ where: { email: email } });
-};
+// const findEmailByUserEmail = async (email) => {
+//   return await User.findOne({ where: { email: email } });
+// };
 
-const createUser = async (username, email, hashPassword) => {
-  return await User.create({ username, email, password: hashPassword });
-};
+// const createUser = async (username, email, hashPassword) => {
+//   return await User.create({ username, email, password: hashPassword });
+// };
 
-const loginUser = async (username) => {
-  const res = await getUserByUsername(username);
-  return res;
-};
+// const loginUser = async (username) => {
+//   const res = await getUserByUsername(username);
+//   return res;
+// };
 
 module.exports = {
-  createUser,
-  findEmailByUserEmail,
-  loginUser,
+  // createUser,
+  // findEmailByUserEmail,
+  // loginUser,
   getUserByUsername,
   getUserById,
   deleteUserById,
