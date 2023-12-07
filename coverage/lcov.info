@@ -643,8 +643,8 @@ FN:33,findBlogByUUId
 FN:40,findBlogByAuthUser
 FN:47,updateBlogById
 FNF:9
-FNH:0
-FNDA:0,createBlog
+FNH:1
+FNDA:2,createBlog
 FNDA:0,findBlogsById
 FNDA:0,countBlogs
 FNDA:0,findAllBlogs
@@ -656,8 +656,8 @@ FNDA:0,updateBlogById
 DA:1,1
 DA:2,1
 DA:3,1
-DA:4,0
-DA:5,0
+DA:4,2
+DA:5,2
 DA:6,1
 DA:7,1
 DA:8,0
@@ -715,9 +715,10 @@ DA:59,1
 DA:60,1
 DA:61,1
 LF:61
-LH:30
-BRF:0
-BRH:0
+LH:32
+BRDA:3,0,0,2
+BRF:1
+BRH:1
 end_of_record
 TN:
 SF:repositories\user.repository.js

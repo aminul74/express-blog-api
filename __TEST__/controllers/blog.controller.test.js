@@ -279,15 +279,6 @@ describe("Blog Controllers", () => {
         createdAt: "12-12-12",
         updatedAt: "12-12-12",
       };
-      const blogList = {
-        id: "1",
-        title: "Test 1",
-        content: "Hello world 1!",
-        authorId: "1",
-        createdAt: "12-12-12",
-        updatedAt: "12-12-12",
-      };
-      const next = jest.fn();
 
       //Moc
       userService.userFromAuthToken.mockResolvedValue(user);
@@ -358,15 +349,6 @@ describe("Blog Controllers", () => {
         title: "Test 1",
         content: "Hello world 1!",
         authorId: "1",
-        createdAt: "12-12-12",
-        updatedAt: "12-12-12",
-      };
-
-      const user = {
-        id: "12345",
-        username: "aminul123",
-        email: "aminul@gmail.com",
-        password: "a1234b4",
         createdAt: "12-12-12",
         updatedAt: "12-12-12",
       };
