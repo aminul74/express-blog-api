@@ -1,7 +1,5 @@
 const authRepositories = require("../repositories/auth.repository");
 const bcrypt = require("bcrypt");
-const { UnauthorizedError } = require("../utils/errors");
-const { decodeToken } = require("../utils/JWT");
 
 const processUserRegistration = async (username, email, password) => {
   const checkEmail = await authRepositories.findEmailByUserEmail(email);
@@ -25,14 +23,14 @@ const processUserRegistration = async (username, email, password) => {
 };
 
 const processUserLogin = async (username, password) => {
-  const checkUserName = await authRepositories.loginUser(username);
+  const validUser = await authRepositories.getUserByUsername(username);
 
-  if (!checkUserName) {
+  if (!validUser) {
     const error = new Error("Username not found");
     error.status = 404;
     throw error;
   }
-  const isValid = await bcrypt.compare(password, checkUserName.password);
+  const isValid = await bcrypt.compare(password, validUser.password);
 
   if (!isValid) {
     const error = new Error("Wrong password");
@@ -44,15 +42,15 @@ const processUserLogin = async (username, password) => {
 };
 
 const getUserByUsername = async (username) => {
-    const user = await authRepositories.getUserByUsername(username);
-    if (!user) {
-      throw new Error("Something went wrong, please try again!");
-    }
-    return user;
-  };
+  const user = await authRepositories.getUserByUsername(username);
+  if (!user) {
+    throw new Error("Something went wrong, please try again!");
+  }
+  return user;
+};
 
 module.exports = {
   processUserRegistration,
   processUserLogin,
-  getUserByUsername
+  getUserByUsername,
 };

@@ -86,8 +86,8 @@ describe("Auth Controllers", () => {
         const password = "pass123";
         const hashedPassword = "hashed_pass123";
 
-        // Mock
-        authRepositories.loginUser.mockResolvedValue({
+        // Mock////////////////////////
+        authRepositories.getUserByUsername.mockResolvedValue({
           username,
           password: hashedPassword,
         });
@@ -97,7 +97,9 @@ describe("Auth Controllers", () => {
         const result = await processUserLogin(username, password);
 
         // Assert
-        expect(authRepositories.loginUser).toHaveBeenCalledWith(username);
+        expect(authRepositories.getUserByUsername).toHaveBeenCalledWith(
+          username
+        );
         expect(bcrypt.compare).toHaveBeenCalledWith(password, hashedPassword);
         expect(result).toBe(true);
       });
@@ -108,7 +110,7 @@ describe("Auth Controllers", () => {
         const password = "pass123";
 
         // Mock
-        authRepositories.loginUser.mockRejectedValue(
+        authRepositories.getUserByUsername.mockRejectedValue(
           new Error("Username not found")
         );
 
@@ -116,7 +118,9 @@ describe("Auth Controllers", () => {
         await expect(processUserLogin(username, password)).rejects.toThrow(
           Error
         );
-        expect(authRepositories.loginUser).toHaveBeenCalledWith(username);
+        expect(authRepositories.getUserByUsername).toHaveBeenCalledWith(
+          username
+        );
         expect(bcrypt.compare).not.toHaveBeenCalled();
       });
 
@@ -127,7 +131,7 @@ describe("Auth Controllers", () => {
         const hashedPassword = "hashed_pass123";
 
         // Mock
-        authRepositories.loginUser.mockResolvedValue({
+        authRepositories.getUserByUsername.mockResolvedValue({
           username,
           password: hashedPassword,
         });
@@ -138,7 +142,9 @@ describe("Auth Controllers", () => {
         await expect(processUserLogin(username, password)).rejects.toThrow(
           Error
         );
-        expect(authRepositories.loginUser).toHaveBeenCalledWith(username);
+        expect(authRepositories.getUserByUsername).toHaveBeenCalledWith(
+          username
+        );
         expect(bcrypt.compare).toHaveBeenCalledWith(password, hashedPassword);
       });
     });

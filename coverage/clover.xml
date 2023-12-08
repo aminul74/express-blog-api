@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1701986037879" clover="3.2.0">
-  <project timestamp="1701986037879" name="All files">
-    <metrics statements="932" coveredstatements="743" conditionals="109" coveredconditionals="81" methods="49" coveredmethods="32" elements="1090" coveredelements="856" complexity="0" loc="932" ncloc="932" packages="7" files="17" classes="17"/>
+<coverage generated="1702024901923" clover="3.2.0">
+  <project timestamp="1702024901923" name="All files">
+    <metrics statements="879" coveredstatements="698" conditionals="112" coveredconditionals="84" methods="48" coveredmethods="35" elements="1039" coveredelements="817" complexity="0" loc="879" ncloc="879" packages="7" files="17" classes="17"/>
     <package name="configures">
       <metrics statements="24" coveredstatements="24" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="database.js" path="D:\Projects\Final Project\express-blog-api\configures\database.js">
+      <file name="database.js" path="C:\Express-Project\express-blog-api\express-blog-api\configures\database.js">
         <metrics statements="24" coveredstatements="24" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -34,7 +34,7 @@
     </package>
     <package name="controllers">
       <metrics statements="318" coveredstatements="286" conditionals="44" coveredconditionals="32" methods="11" coveredmethods="11"/>
-      <file name="auth.controller.js" path="D:\Projects\Final Project\express-blog-api\controllers\auth.controller.js">
+      <file name="auth.controller.js" path="C:\Express-Project\express-blog-api\express-blog-api\controllers\auth.controller.js">
         <metrics statements="65" coveredstatements="61" conditionals="8" coveredconditionals="6" methods="2" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -102,7 +102,7 @@
         <line num="64" count="1" type="stmt"/>
         <line num="65" count="1" type="stmt"/>
       </file>
-      <file name="blog.controller.js" path="D:\Projects\Final Project\express-blog-api\controllers\blog.controller.js">
+      <file name="blog.controller.js" path="C:\Express-Project\express-blog-api\express-blog-api\controllers\blog.controller.js">
         <metrics statements="180" coveredstatements="158" conditionals="28" coveredconditionals="20" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -285,7 +285,7 @@
         <line num="179" count="1" type="stmt"/>
         <line num="180" count="1" type="stmt"/>
       </file>
-      <file name="user.controller.js" path="D:\Projects\Final Project\express-blog-api\controllers\user.controller.js">
+      <file name="user.controller.js" path="C:\Express-Project\express-blog-api\express-blog-api\controllers\user.controller.js">
         <metrics statements="73" coveredstatements="67" conditionals="8" coveredconditionals="6" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -364,7 +364,7 @@
     </package>
     <package name="dto">
       <metrics statements="48" coveredstatements="17" conditionals="2" coveredconditionals="0" methods="5" coveredmethods="0"/>
-      <file name="blog.dto.js" path="D:\Projects\Final Project\express-blog-api\dto\blog.dto.js">
+      <file name="blog.dto.js" path="C:\Express-Project\express-blog-api\express-blog-api\dto\blog.dto.js">
         <metrics statements="19" coveredstatements="3" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="1" count="0" type="cond" truecount="0" falsecount="1"/>
         <line num="2" count="0" type="stmt"/>
@@ -386,7 +386,7 @@
         <line num="18" count="1" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
       </file>
-      <file name="user.dto.js" path="D:\Projects\Final Project\express-blog-api\dto\user.dto.js">
+      <file name="user.dto.js" path="C:\Express-Project\express-blog-api\express-blog-api\dto\user.dto.js">
         <metrics statements="29" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -421,7 +421,7 @@
     </package>
     <package name="models">
       <metrics statements="52" coveredstatements="52" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="blog.model.js" path="D:\Projects\Final Project\express-blog-api\models\blog.model.js">
+      <file name="blog.model.js" path="C:\Express-Project\express-blog-api\express-blog-api\models\blog.model.js">
         <metrics statements="25" coveredstatements="25" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -449,7 +449,7 @@
         <line num="24" count="1" type="stmt"/>
         <line num="25" count="1" type="stmt"/>
       </file>
-      <file name="user.model.js" path="D:\Projects\Final Project\express-blog-api\models\user.model.js">
+      <file name="user.model.js" path="C:\Express-Project\express-blog-api\express-blog-api\models\user.model.js">
         <metrics statements="27" coveredstatements="27" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -481,25 +481,25 @@
       </file>
     </package>
     <package name="repositories">
-      <metrics statements="131" coveredstatements="108" conditionals="9" coveredconditionals="9" methods="17" coveredmethods="9"/>
-      <file name="auth.repository.js" path="D:\Projects\Final Project\express-blog-api\repositories\auth.repository.js">
-        <metrics statements="23" coveredstatements="15" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
+      <metrics statements="131" coveredstatements="116" conditionals="12" coveredconditionals="12" methods="16" coveredmethods="12"/>
+      <file name="auth.repository.js" path="C:\Express-Project\express-blog-api\express-blog-api\repositories\auth.repository.js">
+        <metrics statements="23" coveredstatements="23" conditionals="3" coveredconditionals="3" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="4" count="0" type="stmt"/>
-        <line num="5" count="0" type="stmt"/>
+        <line num="3" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
+        <line num="7" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
         <line num="13" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
+        <line num="14" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
         <line num="17" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
@@ -508,7 +508,7 @@
         <line num="22" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
       </file>
-      <file name="blog.repository.js" path="D:\Projects\Final Project\express-blog-api\repositories\blog.repository.js">
+      <file name="blog.repository.js" path="C:\Express-Project\express-blog-api\express-blog-api\repositories\blog.repository.js">
         <metrics statements="61" coveredstatements="61" conditionals="9" coveredconditionals="9" methods="9" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -572,7 +572,7 @@
         <line num="60" count="1" type="stmt"/>
         <line num="61" count="1" type="stmt"/>
       </file>
-      <file name="user.repository.js" path="D:\Projects\Final Project\express-blog-api\repositories\user.repository.js">
+      <file name="user.repository.js" path="C:\Express-Project\express-blog-api\express-blog-api\repositories\user.repository.js">
         <metrics statements="47" coveredstatements="32" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -624,22 +624,22 @@
       </file>
     </package>
     <package name="services">
-      <metrics statements="284" coveredstatements="239" conditionals="54" coveredconditionals="40" methods="12" coveredmethods="12"/>
-      <file name="auth.service.js" path="D:\Projects\Final Project\express-blog-api\services\auth.service.js">
-        <metrics statements="58" coveredstatements="44" conditionals="15" coveredconditionals="11" methods="3" coveredmethods="3"/>
+      <metrics statements="231" coveredstatements="186" conditionals="54" coveredconditionals="40" methods="12" coveredmethods="12"/>
+      <file name="auth.service.js" path="C:\Express-Project\express-blog-api\express-blog-api\services\auth.service.js">
+        <metrics statements="56" coveredstatements="42" conditionals="15" coveredconditionals="11" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="6" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="7" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="9" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="4" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="5" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
         <line num="10" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="13" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="11" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
         <line num="14" count="1" type="stmt"/>
         <line num="15" count="1" type="stmt"/>
         <line num="16" count="1" type="stmt"/>
@@ -651,42 +651,40 @@
         <line num="22" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
         <line num="24" count="1" type="stmt"/>
-        <line num="25" count="1" type="stmt"/>
-        <line num="26" count="1" type="stmt"/>
-        <line num="27" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="28" count="3" type="cond" truecount="1" falsecount="0"/>
-        <line num="29" count="2" type="stmt"/>
-        <line num="30" count="3" type="cond" truecount="0" falsecount="1"/>
+        <line num="25" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="26" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="27" count="2" type="stmt"/>
+        <line num="28" count="3" type="cond" truecount="0" falsecount="1"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
         <line num="31" count="0" type="stmt"/>
-        <line num="32" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="34" count="0" type="cond" truecount="1" falsecount="0"/>
-        <line num="35" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="36" count="1" type="stmt"/>
-        <line num="37" count="3" type="cond" truecount="0" falsecount="1"/>
+        <line num="32" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="33" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="3" type="cond" truecount="0" falsecount="1"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
         <line num="38" count="0" type="stmt"/>
-        <line num="39" count="0" type="stmt"/>
-        <line num="40" count="0" type="stmt"/>
-        <line num="41" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="39" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
         <line num="42" count="1" type="stmt"/>
         <line num="43" count="1" type="stmt"/>
-        <line num="44" count="1" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
-        <line num="46" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="47" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="48" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="50" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="44" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="45" count="2" type="cond" truecount="1" falsecount="0"/>
+        <line num="46" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="48" count="0" type="cond" truecount="1" falsecount="0"/>
+        <line num="49" count="1" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
         <line num="51" count="1" type="stmt"/>
         <line num="52" count="1" type="stmt"/>
         <line num="53" count="1" type="stmt"/>
         <line num="54" count="1" type="stmt"/>
         <line num="55" count="1" type="stmt"/>
         <line num="56" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
-        <line num="58" count="1" type="stmt"/>
       </file>
-      <file name="blog.service.js" path="D:\Projects\Final Project\express-blog-api\services\blog.service.js">
+      <file name="blog.service.js" path="C:\Express-Project\express-blog-api\express-blog-api\services\blog.service.js">
         <metrics statements="105" coveredstatements="83" conditionals="27" coveredconditionals="20" methods="6" coveredmethods="6"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -794,134 +792,83 @@
         <line num="104" count="1" type="stmt"/>
         <line num="105" count="1" type="stmt"/>
       </file>
-      <file name="user.service.js" path="D:\Projects\Final Project\express-blog-api\services\user.service.js">
-        <metrics statements="121" coveredstatements="112" conditionals="12" coveredconditionals="9" methods="3" coveredmethods="3"/>
+      <file name="user.service.js" path="C:\Express-Project\express-blog-api\express-blog-api\services\user.service.js">
+        <metrics statements="70" coveredstatements="61" conditionals="12" coveredconditionals="9" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
+        <line num="6" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="7" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="8" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
-        <line num="10" count="1" type="stmt"/>
-        <line num="11" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="15" count="1" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
-        <line num="17" count="1" type="stmt"/>
-        <line num="18" count="1" type="stmt"/>
-        <line num="19" count="1" type="stmt"/>
-        <line num="20" count="1" type="stmt"/>
-        <line num="21" count="1" type="stmt"/>
-        <line num="22" count="1" type="stmt"/>
-        <line num="23" count="1" type="stmt"/>
-        <line num="24" count="1" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
+        <line num="11" count="3" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="15" count="3" type="cond" truecount="0" falsecount="1"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="19" count="3" type="stmt"/>
+        <line num="20" count="3" type="cond" truecount="0" falsecount="1"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="24" count="3" type="stmt"/>
         <line num="25" count="1" type="stmt"/>
-        <line num="26" count="1" type="stmt"/>
-        <line num="27" count="1" type="stmt"/>
+        <line num="26" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="27" count="2" type="cond" truecount="1" falsecount="0"/>
         <line num="28" count="1" type="stmt"/>
-        <line num="29" count="1" type="stmt"/>
-        <line num="30" count="1" type="stmt"/>
-        <line num="31" count="1" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="33" count="1" type="stmt"/>
+        <line num="29" count="2" type="cond" truecount="0" falsecount="1"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="33" count="0" type="cond" truecount="1" falsecount="0"/>
         <line num="34" count="1" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
         <line num="36" count="1" type="stmt"/>
-        <line num="37" count="1" type="stmt"/>
-        <line num="38" count="1" type="stmt"/>
-        <line num="39" count="1" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="41" count="1" type="stmt"/>
-        <line num="42" count="1" type="stmt"/>
-        <line num="43" count="1" type="stmt"/>
-        <line num="44" count="1" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
+        <line num="37" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="38" count="3" type="stmt"/>
+        <line num="39" count="3" type="stmt"/>
+        <line num="40" count="3" type="stmt"/>
+        <line num="41" count="3" type="stmt"/>
+        <line num="42" count="3" type="stmt"/>
+        <line num="43" count="3" type="stmt"/>
+        <line num="44" count="3" type="stmt"/>
+        <line num="45" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="46" count="1" type="stmt"/>
         <line num="47" count="1" type="stmt"/>
         <line num="48" count="1" type="stmt"/>
-        <line num="49" count="1" type="stmt"/>
-        <line num="50" count="1" type="stmt"/>
-        <line num="51" count="1" type="stmt"/>
-        <line num="52" count="1" type="stmt"/>
-        <line num="53" count="1" type="stmt"/>
-        <line num="54" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="55" count="3" type="cond" truecount="1" falsecount="0"/>
-        <line num="56" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
-        <line num="58" count="3" type="stmt"/>
-        <line num="59" count="3" type="stmt"/>
-        <line num="60" count="3" type="stmt"/>
-        <line num="61" count="3" type="stmt"/>
-        <line num="62" count="3" type="stmt"/>
-        <line num="63" count="3" type="cond" truecount="0" falsecount="1"/>
-        <line num="64" count="0" type="stmt"/>
-        <line num="65" count="0" type="stmt"/>
-        <line num="66" count="3" type="stmt"/>
-        <line num="67" count="3" type="stmt"/>
-        <line num="68" count="3" type="cond" truecount="0" falsecount="1"/>
-        <line num="69" count="0" type="stmt"/>
-        <line num="70" count="0" type="stmt"/>
-        <line num="71" count="0" type="stmt"/>
-        <line num="72" count="3" type="stmt"/>
-        <line num="73" count="1" type="stmt"/>
-        <line num="74" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="75" count="2" type="cond" truecount="1" falsecount="0"/>
-        <line num="76" count="1" type="stmt"/>
-        <line num="77" count="2" type="cond" truecount="0" falsecount="1"/>
-        <line num="78" count="0" type="stmt"/>
-        <line num="79" count="0" type="stmt"/>
-        <line num="80" count="0" type="stmt"/>
-        <line num="81" count="0" type="cond" truecount="1" falsecount="0"/>
-        <line num="82" count="1" type="stmt"/>
-        <line num="83" count="1" type="stmt"/>
-        <line num="84" count="1" type="stmt"/>
-        <line num="85" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="86" count="3" type="stmt"/>
-        <line num="87" count="3" type="stmt"/>
-        <line num="88" count="3" type="stmt"/>
-        <line num="89" count="3" type="stmt"/>
-        <line num="90" count="3" type="stmt"/>
-        <line num="91" count="3" type="stmt"/>
-        <line num="92" count="3" type="stmt"/>
-        <line num="93" count="3" type="cond" truecount="1" falsecount="0"/>
-        <line num="94" count="1" type="stmt"/>
-        <line num="95" count="1" type="stmt"/>
-        <line num="96" count="1" type="stmt"/>
-        <line num="97" count="1" type="cond" truecount="1" falsecount="0"/>
-        <line num="98" count="2" type="stmt"/>
-        <line num="99" count="2" type="stmt"/>
-        <line num="100" count="2" type="stmt"/>
-        <line num="101" count="2" type="stmt"/>
-        <line num="102" count="2" type="stmt"/>
-        <line num="103" count="2" type="stmt"/>
-        <line num="104" count="2" type="stmt"/>
-        <line num="105" count="3" type="cond" truecount="1" falsecount="0"/>
-        <line num="106" count="1" type="stmt"/>
-        <line num="107" count="1" type="stmt"/>
-        <line num="108" count="1" type="stmt"/>
-        <line num="109" count="1" type="stmt"/>
-        <line num="110" count="1" type="stmt"/>
-        <line num="111" count="1" type="stmt"/>
-        <line num="112" count="1" type="stmt"/>
-        <line num="113" count="1" type="stmt"/>
-        <line num="114" count="1" type="stmt"/>
-        <line num="115" count="1" type="stmt"/>
-        <line num="116" count="1" type="stmt"/>
-        <line num="117" count="1" type="stmt"/>
-        <line num="118" count="1" type="stmt"/>
-        <line num="119" count="1" type="stmt"/>
-        <line num="120" count="1" type="stmt"/>
-        <line num="121" count="1" type="stmt"/>
+        <line num="49" count="1" type="cond" truecount="1" falsecount="0"/>
+        <line num="50" count="2" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="56" count="2" type="stmt"/>
+        <line num="57" count="3" type="cond" truecount="1" falsecount="0"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="63" count="1" type="stmt"/>
+        <line num="64" count="1" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="70" count="1" type="stmt"/>
       </file>
     </package>
     <package name="utils">
       <metrics statements="75" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="0"/>
-      <file name="JWT.js" path="D:\Projects\Final Project\express-blog-api\utils\JWT.js">
+      <file name="JWT.js" path="C:\Express-Project\express-blog-api\express-blog-api\utils\JWT.js">
         <metrics statements="16" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -940,7 +887,7 @@
         <line num="15" count="1" type="stmt"/>
         <line num="16" count="1" type="stmt"/>
       </file>
-      <file name="errors.js" path="D:\Projects\Final Project\express-blog-api\utils\errors.js">
+      <file name="errors.js" path="C:\Express-Project\express-blog-api\express-blog-api\utils\errors.js">
         <metrics statements="7" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="0" type="stmt"/>
@@ -950,7 +897,7 @@
         <line num="6" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
       </file>
-      <file name="responseType.js" path="D:\Projects\Final Project\express-blog-api\utils\responseType.js">
+      <file name="responseType.js" path="C:\Express-Project\express-blog-api\express-blog-api\utils\responseType.js">
         <metrics statements="52" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
