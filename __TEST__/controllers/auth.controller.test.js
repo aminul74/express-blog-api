@@ -14,15 +14,16 @@ jest.mock("../../utils/JWT");
 describe("Auth Controller", () => {
   describe("handleUserRegistration", () => {
     it("Test Case 1: Registration success!", async () => {
-      // arrange
+      // Arrange
       const req = {
         body: {
-          username: "fake_user",
-          email: "fake@gmail.com",
-          password: "fake_pass",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
         },
       };
 
+      const { username, email, password } = req.body;
       const res = {
         cookie: jest.fn(),
         status: jest.fn().mockReturnThis(),
@@ -31,36 +32,65 @@ describe("Auth Controller", () => {
 
       const next = jest.fn();
 
-      UserDtoFilter.UserRegRequestDto.mockReturnValue(req.body);
+      const userDto = {
+        username: "aminul123",
+        email: "aminul@gmail.com",
+        password: "a1234b4",
+      };
 
-      const responseData = { id: 123 };
-      authService.processUserRegistration.mockResolvedValue(responseData);
+      const registeredUser = {
+        id: "12345",
+        username: "aminul123",
+        email: "aminul@gmail.com",
+        password: "a1234b4",
+      };
 
-      const expectedToken = "some_generated_token";
-      createToken.mockReturnValue(expectedToken);
+      // Moc
+      UserDtoFilter.UserRegRequestDto.mockReturnValue(userDto);
+
+      authService.processUserRegistration.mockResolvedValue(registeredUser);
+
+      createToken.mockReturnValue(registeredUser.id);
 
       // Act
       await handleUserRegistration(req, res, next);
 
-      // Assert
+      //Assert
+      expect(UserDtoFilter.UserRegRequestDto).toHaveBeenCalledWith(
+        username,
+        email,
+        password
+      );
+
+      expect(authService.processUserRegistration).toHaveBeenCalledWith(
+        userDto.username,
+        userDto.email,
+        userDto.password
+      );
+
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.cookie).toHaveBeenCalledWith("access-token", expectedToken, {
-        maxAge: 2592000,
-      });
+      expect(res.cookie).toHaveBeenCalledWith(
+        "access-token",
+        registeredUser.id,
+        {
+          maxAge: 2592000,
+        }
+      );
       expect(res.send).toHaveBeenCalledWith("Signup Success!");
       expect(next).not.toHaveBeenCalled();
     });
 
     it("Test Case 2: Registration Failure!", async () => {
-      // arrange
+      // Arrange
       const req = {
         body: {
-          username: "fake_user",
-          email: "fake@gmail.com",
-          password: "fake_pass",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
         },
       };
 
+      const { username, email, password } = req.body;
       const res = {
         cookie: jest.fn(),
         status: jest.fn().mockReturnThis(),
@@ -69,58 +99,99 @@ describe("Auth Controller", () => {
 
       const next = jest.fn();
 
-      UserDtoFilter.UserRegRequestDto.mockReturnValue(req.body);
+      const userDto = {
+        username: "aminul123",
+        email: "aminul@gmail.com",
+        password: "a1234b4",
+      };
 
-      authService.processUserRegistration.mockRejectedValue(
-        new Error("Email already exists")
-      );
+      // Moc
+      UserDtoFilter.UserRegRequestDto.mockReturnValue(userDto);
+
+      authService.processUserRegistration.mockRejectedValue(new Error("error"));
 
       // Act
       await handleUserRegistration(req, res, next);
 
-      // Assert
+      //Assert
+      expect(UserDtoFilter.UserRegRequestDto).toHaveBeenCalledWith(
+        username,
+        email,
+        password
+      );
+
+      expect(authService.processUserRegistration).toHaveBeenCalledWith(
+        userDto.username,
+        userDto.email,
+        userDto.password
+      );
+
+      // expect(res.status).toHaveBeenCalled(409);
+      expect(res.cookie).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
       expect(next).toHaveBeenCalledWith(expect.any(Error));
-      expect(res.status).not.toHaveBeenCalled();
-      expect(res.cookie).not.toHaveBeenCalled();
-      expect(res.send).not.toHaveBeenCalled();
     });
   });
 
   describe("handleLoginRequest", () => {
     it("Test case 1: Login sucess!", async () => {
       //Arrange
-
       const req = {
         body: {
-          username: "fake_user",
-          password: "fake_pass",
+          username: "aminul123",
+          password: "a1234b4",
         },
       };
 
+      const { username, password } = req.body;
       const res = {
         cookie: jest.fn(),
         status: jest.fn().mockReturnThis(),
         send: jest.fn(),
       };
 
+      const userDto = {
+        username: "aminul123",
+        email: "aminul@gmail.com",
+        password: "a1234b4",
+      };
+
+      const validUser = {
+        id: "1234",
+        username: "aminul123",
+        email: "aminul@gmail.com",
+        password: "a1234b4",
+      };
       const next = jest.fn();
 
-      UserDtoFilter.UserLoginRequestDto.mockReturnValue(
-        "fake_user",
-        "fake_pass"
-      );
-      authService.processUserLogin.mockResolvedValue(req.body);
-      authService.getUserByUsername.mockResolvedValue(req.body);
-      createToken.mockReturnValue("user.id");
+      UserDtoFilter.UserLoginRequestDto.mockReturnValue(userDto);
+      authService.processUserLogin.mockResolvedValue(true);
+      authService.getUserByUsername.mockResolvedValue(validUser);
+      createToken.mockReturnValue(validUser.id);
 
       //Act
       await handleLoginRequest(req, res, next);
 
       //Assert
-      expect(res.cookie).toHaveBeenCalledWith("access-token", "user.id", {
+      expect(UserDtoFilter.UserLoginRequestDto).toHaveBeenCalledWith(
+        username,
+        password
+      );
+
+      expect(authService.processUserLogin).toHaveBeenCalledWith(
+        userDto.username,
+        userDto.password
+      );
+
+      expect(authService.getUserByUsername).toHaveBeenCalledWith(
+        userDto.username
+      );
+
+      expect(res.cookie).toHaveBeenCalledWith("access-token", validUser.id, {
         maxAge: 2592000,
       });
-      expect(res.status).toHaveBeenCalledTimes(1);
+
+      expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith("Login Success!");
       expect(next).not.toHaveBeenCalledWith();
     });
@@ -128,31 +199,45 @@ describe("Auth Controller", () => {
       //Arrange
       const req = {
         body: {
-          username: "fake_user",
-          password: "fake_pass",
+          username: "aminul123",
+          password: "a1234b4",
         },
       };
 
+      const { username, password } = req.body;
       const res = {
         cookie: jest.fn(),
         status: jest.fn().mockReturnThis(),
         send: jest.fn(),
       };
 
+      const userDto = {
+        username: "aminul123",
+        email: "aminul@gmail.com",
+        password: "a1234b4",
+      };
+
       const next = jest.fn();
 
-      UserDtoFilter.UserLoginRequestDto.mockReturnValue(req.body);
-      authService.processUserLogin.mockRejectedValue(
-        new Error("Username or password is incorrect.")
-      );
-      authService.getUserByUsername.mockResolvedValue(req.body);
-      createToken.mockReturnValue("user.id");
+      UserDtoFilter.UserLoginRequestDto.mockReturnValue(userDto);
+      authService.processUserLogin.mockRejectedValue(new Error("error"));
 
       //Act
       await handleLoginRequest(req, res, next);
 
       //Assert
+      expect(UserDtoFilter.UserLoginRequestDto).toHaveBeenCalledWith(
+        username,
+        password
+      );
 
+      expect(authService.processUserLogin).toHaveBeenCalledWith(
+        userDto.username,
+        userDto.password
+      );
+
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
       expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
   });

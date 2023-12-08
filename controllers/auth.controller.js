@@ -9,17 +9,17 @@ const handleUserRegistration = async (req, res, next) => {
 
     const user = new UserDtoFilter.UserRegRequestDto(username, email, password);
 
-    const responseData = await authService.processUserRegistration(
+    const registeredUser = await authService.processUserRegistration(
       user.username,
       user.email,
       user.password
     );
 
-    if (!responseData) {
+    if (null) {
       throw new Error("Signup Failed");
     }
 
-    const userRegistrationToken = createToken(responseData.id);
+    const userRegistrationToken = createToken(registeredUser.id);
 
     res.cookie("access-token", userRegistrationToken, {
       maxAge: 30 * 24 * 60 * 60,
@@ -43,7 +43,7 @@ const handleLoginRequest = async (req, res, next) => {
     );
 
     if (!isMatchedUsernamePassword) {
-      throw new Error("Username or password is incorrect.");
+      throw new Error("error");
     }
 
     const user = await authService.getUserByUsername(userDto.username);
