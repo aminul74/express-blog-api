@@ -45,28 +45,26 @@ const processAllBlogs = async (page, size) => {
 };
 
 const processDeleteBlog = async (user, blogUUID) => {
-  const processToDelete = await blogRepositories.deleteBlogById(
-    user.id,
-    blogUUID
-  );
-  if (!processToDelete) {
+  console.log("USERTTT", blogUUID);
+  const deletedBlog = await blogRepositories.deleteBlogById(user.id, blogUUID);
+  if (!deletedBlog) {
     const error = new Error("Blog not found!");
     error.status = 404;
     throw error;
   }
-  return processToDelete;
+  return deletedBlog;
 };
 
 const processBlogbyId = async (blogUUID) => {
-  const processBlog = await blogRepositories.findBlogByUUId(blogUUID);
+  const getBlog = await blogRepositories.findBlogByUUId(blogUUID);
 
-  if (!processBlog) {
+  if (!getBlog) {
     const error = new Error("Blog not found!");
     error.status = 404;
     throw error;
   }
 
-  return processBlog;
+  return getBlog;
 };
 
 const processUpdateBlog = async (user, blogUUID, blogDto) => {

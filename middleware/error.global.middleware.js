@@ -1,4 +1,4 @@
-module.exports = (err, req, res) => {
+module.exports = (err, req, res, next) => {
   const errStatus = err.status || 500;
   let errMessage;
 
@@ -9,5 +9,5 @@ module.exports = (err, req, res) => {
     errMessage = err.message || "Unknown Error";
   }
 
-  res.status(errStatus).send(errMessage);
+  return res.status(errStatus).send(errMessage);
 };

@@ -15,17 +15,13 @@ const handleUserRegistration = async (req, res, next) => {
       user.password
     );
 
-    if (null) {
-      throw new Error("Signup Failed");
-    }
-
     const userRegistrationToken = createToken(registeredUser.id);
 
     res.cookie("access-token", userRegistrationToken, {
       maxAge: 30 * 24 * 60 * 60,
     });
 
-    return res.status(201).send("Signup Success!");
+    return res.status(201).send(userRegistrationToken);
   } catch (error) {
     next(error);
   }
@@ -37,14 +33,9 @@ const handleLoginRequest = async (req, res, next) => {
     const userDto = new UserDtoFilter.UserLoginRequestDto(username, password);
 
     const isMatchedUsernamePassword = await authService.processUserLogin(
-      //CheckUsernameAndPassword
       userDto.username,
       userDto.password
     );
-
-    if (!isMatchedUsernamePassword) {
-      throw new Error("error");
-    }
 
     const user = await authService.getUserByUsername(userDto.username);
 
@@ -53,7 +44,7 @@ const handleLoginRequest = async (req, res, next) => {
     res.cookie("access-token", userLoginToken, { maxAge: 30 * 24 * 60 * 60 });
 
     res.status(200);
-    res.send("Login Success!");
+    res.send(userLoginToken);
   } catch (error) {
     next(error);
   }

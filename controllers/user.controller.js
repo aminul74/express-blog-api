@@ -4,10 +4,12 @@ const UserDtoFilter = require("../dto/user.dto");
 
 const handleProfileGetRequest = async (req, res, next) => {
   try {
-    const userData = await userService.userFromAuthToken(
-      req.cookies["access-token"]
-    );
-    // console.log("ZZZ", userData);
+    const authorizationHeader = req.headers["authorization"];
+    const accessToken = authorizationHeader.split(" ")[1];
+    const userData = await userService.userFromAuthToken(accessToken);
+    // const userData = await userService.userFromAuthToken(
+    //   req.cookies["access-token"]
+    // );
     const user = userData.toJSON();
     return res.status(200).send({ ...user, password: undefined });
   } catch (error) {
@@ -17,17 +19,12 @@ const handleProfileGetRequest = async (req, res, next) => {
 
 const handleProfileDeletionRequest = async (req, res, next) => {
   try {
-    const user = await userService.userFromAuthToken(
-      req.cookies["access-token"]
-    );
+    const authorizationHeader = req.headers["authorization"];
+    const accessToken = authorizationHeader.split(" ")[1];
+
+    const user = await userService.userFromAuthToken(accessToken);
 
     const isDeletedUser = await userService.processUserDeleteById(user);
-
-    if (!isDeletedUser) {
-      const error = new Error("Unable to delete!");
-      error.status = 400;
-      throw error;
-    }
 
     return res.status(200).send("Delete Success!");
   } catch (error) {
@@ -39,22 +36,17 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
   try {
     const { old_password, new_password } = req.body;
 
-    const user = await userService.userFromAuthToken(
-      req.cookies["access-token"]
-    );
+    const authorizationHeader = req.headers["authorization"];
+    const accessToken = authorizationHeader.split(" ")[1];
+
+    const user = await userService.userFromAuthToken(accessToken);
     const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 
     const isPasswordUpdate = await userService.processUserUpdate(
       user,
-      userDto, // { password: "oldPass" },
+      userDto,
       new_password
     );
-
-    if (!isPasswordUpdate) {
-      const error = new Error("Unable to update password please try again!");
-      error.status = 404;
-      throw error;
-    }
 
     res.cookie("access-token", " ", {
       maxAge: -1,
