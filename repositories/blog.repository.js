@@ -7,7 +7,7 @@ const createBlog = async (id, title, content) => {
 const findBlogsById = async (id) => {
   return await Blog.findAll({
     where: { authorId: id },
-    attributes: ["id", "title", "content"],
+    attributes: ["id", "title", "content", "authorId"],
   });
 };
 
@@ -17,6 +17,7 @@ const countBlogs = async () => {
 };
 const findAllBlogs = async (page, size) => {
   return await Blog.findAll({
+    attributes: ["id", "title", "content", "authorId"],
     limit: size,
     offset: page * size,
   });
@@ -33,14 +34,14 @@ const deleteBlogById = async (id, blogUUID) => {
 const findBlogByUUId = async (blogUUID) => {
   return await Blog.findOne({
     where: { id: blogUUID },
-    attributes: ["id", "title", "content"],
+    attributes: ["id", "title", "content", "authorId"],
   });
 };
 
 const findBlogByAuthUser = async (id, blogUUID) => {
   return await Blog.findOne({
     where: { id: blogUUID, authorId: id },
-    attributes: ["id", "title", "content"],
+    attributes: ["id", "title", "content", "authorId"],
   });
 };
 

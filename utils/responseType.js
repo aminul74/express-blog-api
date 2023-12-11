@@ -1,52 +1,59 @@
-const xml2js = require("xml2js");
-const getContentBasedOnNegotiation = (blogs, negotiate) => {
-  let result;
+const getContentBasedOnNegotiation = async (data, format, next) => {
+  try {
+    switch (format) {
+      case "json":
+        return data;
+      case "xml":
+        let xmlData = `<?xml version="1.0" encoding="UTF-8" ?>\n<root>\n`;
+        xmlData += data
+          .map((data) => {
+            let xml = ``;
+            for (let key in data) {
+              xml = xml + `         <${key}>${data[key]} </${key}> \n`;
+            }
+            return xml;
+          })
+          .join(" ");
 
-  switch (negotiate) {
-    case "text":
-      result = blogs
-        .map(
-          (blog) => `
-        id: ${blog.id}
-        title: ${blog.title}
-        content: ${blog.content}`
-        )
-        .join("\n");
-      break;
-    case "json":
-      result = blogs;
-      break;
-    case "html":
-      result = blogs
-        .map(
-          (blog) =>
-            `<div><strong>${blog.id}</strong>
-              <strong>${blog.title}</strong>
-              <p>${blog.content}</p></div>`
-        )
-        .join("");
-      break;
-    case "xml": {
-      const xmlBuilder = new xml2js.Builder();
-      const xmlData = xmlBuilder.buildObject({
-        blogs: {
-          blog: blogs.map((blog) => ({
-            id: blog.id,
-            title: blog.title,
-            content: blog.content,
-          })),
-        },
-      });
+        xmlData = xmlData + `</root>`;
+        return xmlData;
 
-      result = xmlData;
-      break;
+      case "html":
+        const htmldata = data
+          .map((data) => {
+            let html = "<div>";
+            for (let key in data) {
+              html = html + `<p>${key} : ${data[key]}</p>`;
+            }
+            html = html + "</div>";
+            return html;
+          })
+          .join("");
+        return htmldata;
+
+      case "text":
+        const textData = data
+          .map((data) => {
+            let text = "";
+            for (let key in data) {
+              text = text + `${key} : ${data[key]}\n`;
+            }
+
+            return text;
+          })
+          .join("\n");
+
+        return textData;
+
+      default:
+        throw new Error("Not Acceptable");
     }
-
-    default:
-      throw new Error("Not Acceptable");
+  } catch (error) {
+    console.error("Error in getContentBasedOnNegotiation:", error);
+    throw error;
   }
-
-  return result;
 };
 
-module.exports = { getContentBasedOnNegotiation };
+module.exports = {
+  getContentBasedOnNegotiation,
+};

@@ -15,9 +15,12 @@ const handleCreateBlogRequest = async (req, res, next) => {
     const accessToken = authorizationHeader.split(" ")[1];
 
     const user = await userService.userFromAuthToken(accessToken);
+
     const isBlogCreated = await blogService.processNewBlog(user, blogDto);
 
     const newBlog = [isBlogCreated];
+    const jsonBlogs = newBlog.map((blog) => blog.get({ plain: true }));
+
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
     if (!negotiate) {
@@ -25,7 +28,7 @@ const handleCreateBlogRequest = async (req, res, next) => {
     }
 
     res.type(negotiate);
-    const response = getContentBasedOnNegotiation(newBlog, negotiate);
+    const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
 
     return res.status(201).send(response);
   } catch (error) {
@@ -41,7 +44,9 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
     const user = await userService.userFromAuthToken(accessToken);
 
     const isGetUserAllBlogs = await blogService.processSpecificUserBlog(user);
-
+    const jsonBlogs = isGetUserAllBlogs.map((blog) =>
+      blog.get({ plain: true })
+    );
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
     if (!negotiate) {
@@ -49,7 +54,7 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
     }
 
     res.type(negotiate);
-    const response = getContentBasedOnNegotiation(isGetUserAllBlogs, negotiate);
+    const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
     return res.status(200).send(response);
   } catch (error) {
     next(error);
@@ -72,6 +77,7 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
     }
 
     const isGetAllBlogs = await blogService.processAllBlogs(page, size);
+    const jsonBlogs = isGetAllBlogs.map((blogs) => blogs.get({ plain: true }));
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
@@ -80,7 +86,7 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
     }
 
     res.type(negotiate);
-    const response = getContentBasedOnNegotiation(isGetAllBlogs, negotiate);
+    const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
     if (!response) {
       const error = new Error("No response");
       error.status = 400;
@@ -100,7 +106,7 @@ const handleBlogDeletionRequest = async (req, res, next) => {
     const accessToken = authorizationHeader.split(" ")[1];
 
     const user = await userService.userFromAuthToken(accessToken);
-    
+
     const isDeletedBlog = await blogService.processDeleteBlog(user, blogUUID);
 
     return res.status(200).send("Delete success!");
@@ -116,7 +122,7 @@ const handleBlogByIdRequest = async (req, res, next) => {
     const isGetBlogById = await blogService.processBlogbyId(blogUUID);
 
     const getBlogById = [isGetBlogById];
-
+    const jsonBlogs = getBlogById.map((blog) => blog.get({ plain: true }));
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
     if (!negotiate) {
@@ -124,7 +130,7 @@ const handleBlogByIdRequest = async (req, res, next) => {
     }
 
     res.type(negotiate);
-    const response = getContentBasedOnNegotiation(getBlogById, negotiate);
+    const response = getContentBasedOnNegotiation(jsonBlogs, negotiate);
 
     return res.status(200).send(response);
   } catch (error) {
