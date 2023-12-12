@@ -4,13 +4,19 @@ const UserDtoFilter = require("../dto/user.dto");
 
 const handleProfileGetRequest = async (req, res, next) => {
   try {
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
-    // console.log("Token", accessToken);
-    const userData = await userService.userFromAuthToken(accessToken);
+    console.log("PPP", req.user);
+    // const authorizationHeader = req.headers["authorization"];
+    // const accessToken = authorizationHeader.split(" ")[1];
+    // // console.log("Token", accessToken);
+    // const userData = await userService.userFromAuthToken(accessToken);
 
+    // const user = userData.toJSON();
+    // const userProfile = [user];
+    const userData = req.user;
+    // console.log("RRRR", userData);
     const user = userData.toJSON();
     const userProfile = [user];
+    // console.log("zzzzz", user);
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
