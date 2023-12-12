@@ -4,22 +4,11 @@ const UserDtoFilter = require("../dto/user.dto");
 
 const handleProfileGetRequest = async (req, res, next) => {
   try {
-    console.log("PPP", req.user);
-    // const authorizationHeader = req.headers["authorization"];
-    // const accessToken = authorizationHeader.split(" ")[1];
-    // // console.log("Token", accessToken);
-    // const userData = await userService.userFromAuthToken(accessToken);
-
-    // const user = userData.toJSON();
-    // const userProfile = [user];
     const userData = req.user;
-    // console.log("RRRR", userData);
     const user = userData.toJSON();
     const userProfile = [user];
-    // console.log("zzzzz", user);
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
     if (!negotiate) {
       return res.status(406).send("Not Acceptable");
     }
@@ -35,12 +24,8 @@ const handleProfileGetRequest = async (req, res, next) => {
 
 const handleProfileDeletionRequest = async (req, res, next) => {
   try {
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
-
-    const user = await userService.userFromAuthToken(accessToken);
-
-    const isDeletedUser = await userService.processUserDeleteById(user);
+    const userData = req.user;
+    const isDeletedUser = await userService.processUserDeleteById(userData);
 
     return res.status(200).send("Delete Success!");
   } catch (error) {
@@ -52,21 +37,19 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
   try {
     const { old_password, new_password } = req.body;
 
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
-
-    const user = await userService.userFromAuthToken(accessToken);
     const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 
+    const userData = req.user;
+
     const isPasswordUpdate = await userService.processUserUpdate(
-      user,
+      userData,
       userDto,
       new_password
     );
 
-    res.cookie("access-token", " ", {
-      maxAge: -1,
-    });
+    // res.cookie("access-token", " ", {
+    //   maxAge: -1,
+    // });
 
     return res.status(200).send("Password update success!");
   } catch (error) {

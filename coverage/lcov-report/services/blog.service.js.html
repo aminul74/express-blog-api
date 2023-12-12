@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.64% </span>
+                <span class="strong">77.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>81/103</span>
+                <span class='fraction'>85/110</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.07% </span>
+                <span class="strong">68.96% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/27</span>
+                <span class='fraction'>20/29</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.64% </span>
+                <span class="strong">77.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>81/103</span>
+                <span class='fraction'>85/110</span>
             </div>
         
             
@@ -166,7 +166,14 @@
 <a name='L101'></a><a href='#L101'>101</a>
 <a name='L102'></a><a href='#L102'>102</a>
 <a name='L103'></a><a href='#L103'>103</a>
-<a name='L104'></a><a href='#L104'>104</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -195,9 +202,16 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -213,7 +227,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -294,29 +308,36 @@ const processSpecificUserBlog = async (user) =&gt; {
 };
 &nbsp;
 const processAllBlogs = async (page, size) =&gt; {
-  let pageNo = page;
-  let numOfContent = size;
 &nbsp;
-  const numOfBlogs = await blogRepositories.countBlogs();
-  const pageLimit = Math.ceil(numOfBlogs / numOfContent);
+    if (!Number.isNaN(page) &amp;&amp; page &gt; 0) {
+      page = page;
+    }<span class="branch-0 cbranch-no" title="branch not covered" > else {</span>
+<span class="cstat-no" title="statement not covered" >      page = 1;</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-  if (pageNo &gt;= pageLimit) {
-    pageNo = 1;
-    numOfContent = 5;
-  }
-  const processAllBlogs = await blogRepositories.findAllBlogs(
-    pageNo,
-    numOfContent
-  );
+    if (!Number.isNaN(size) &amp;&amp; size &gt; 0 &amp;&amp; size &lt; 5) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      size = size;</span>
+    } else {
+      size = 5;
+    }
 &nbsp;
-  if (!processAllBlogs) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >    throw new Error("Please try again!");</span>
-<span class="cstat-no" title="statement not covered" >  }</span>
-  return processAllBlogs;
+    const numOfBlogs = await blogRepositories.countBlogs();
+    const pageLimit = Math.ceil(numOfBlogs / size);
+&nbsp;
+    if (page &gt;= pageLimit) {
+      page = 1;
+    }
+&nbsp;
+    const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
+&nbsp;
+    if (!numOfBlogs) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error("No blogs found.");</span>
+<span class="cstat-no" title="statement not covered" >    }</span>
+&nbsp;
+    return getAllBlogs;
 };
 &nbsp;
 const processDeleteBlog = async (user, blogUUID) =&gt; {
-  console.log("USERTTT", blogUUID);
   const deletedBlog = await blogRepositories.deleteBlogById(user.id, blogUUID);
   if (!deletedBlog) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >    const error = new Error("Blog not found!");</span>
@@ -379,7 +400,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-11T20:07:29.694Z
+                at 2023-12-12T10:51:11.744Z
             </div>
         <script src="../prettify.js"></script>
         <script>

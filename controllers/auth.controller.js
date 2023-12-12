@@ -17,9 +17,9 @@ const handleUserRegistration = async (req, res, next) => {
 
     const userRegistrationToken = createToken(registeredUser.id);
 
-    res.cookie("access-token", userRegistrationToken, {
-      maxAge: 30 * 24 * 60 * 60,
-    });
+    // res.cookie("access-token", userRegistrationToken, {
+    //   maxAge: 30 * 24 * 60 * 60,
+    // });
 
     const tokenResponse = { token: userRegistrationToken };
     const token = [tokenResponse];
@@ -56,7 +56,7 @@ const handleLoginRequest = async (req, res, next) => {
 
     const userLoginToken = createToken(user.id);
 
-    res.cookie("access-token", userLoginToken, { maxAge: 30 * 24 * 60 * 60 });
+    // res.cookie("access-token", userLoginToken, { maxAge: 30 * 24 * 60 * 60 });
     const tokenResponse = { token: userLoginToken };
     const token = [tokenResponse];
     const negotiate = req.accepts(["json", "text", "xml", "html"]);

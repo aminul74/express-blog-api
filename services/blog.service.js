@@ -23,29 +23,36 @@ const processSpecificUserBlog = async (user) => {
 };
 
 const processAllBlogs = async (page, size) => {
-  let pageNo = page;
-  let numOfContent = size;
 
-  const numOfBlogs = await blogRepositories.countBlogs();
-  const pageLimit = Math.ceil(numOfBlogs / numOfContent);
+    if (!Number.isNaN(page) && page > 0) {
+      page = page;
+    } else {
+      page = 1;
+    }
 
-  if (pageNo >= pageLimit) {
-    pageNo = 1;
-    numOfContent = 5;
-  }
-  const processAllBlogs = await blogRepositories.findAllBlogs(
-    pageNo,
-    numOfContent
-  );
+    if (!Number.isNaN(size) && size > 0 && size < 5) {
+      size = size;
+    } else {
+      size = 5;
+    }
 
-  if (!processAllBlogs) {
-    throw new Error("Please try again!");
-  }
-  return processAllBlogs;
+    const numOfBlogs = await blogRepositories.countBlogs();
+    const pageLimit = Math.ceil(numOfBlogs / size);
+
+    if (page >= pageLimit) {
+      page = 1;
+    }
+
+    const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
+
+    if (!numOfBlogs) {
+      throw new Error("No blogs found.");
+    }
+
+    return getAllBlogs;
 };
 
 const processDeleteBlog = async (user, blogUUID) => {
-  console.log("USERTTT", blogUUID);
   const deletedBlog = await blogRepositories.deleteBlogById(user.id, blogUUID);
   if (!deletedBlog) {
     const error = new Error("Blog not found!");

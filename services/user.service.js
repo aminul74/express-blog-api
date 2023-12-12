@@ -1,26 +1,14 @@
 const userRepositories = require("../repositories/user.repository");
 const bcrypt = require("bcrypt");
 const { UnauthorizedError } = require("../utils/errors");
-const { decodeToken } = require("../utils/JWT");
 
-const userFromAuthToken = async (userToken) => {
-  if (!userToken) {
+const userByTokenId = async (data) => {
+  const user = await userRepositories.getUserById(data.id);
+  if (!user) {
     UnauthorizedError();
   }
-  try {
-    const data = await decodeToken(userToken);
 
-    const user = userRepositories.getUserById(data.id);
-
-    if (!user) {
-      UnauthorizedError();
-    }
-
-    return user;
-  } catch (error) {
-    console.log("error", error);
-    UnauthorizedError();
-  }
+  return user;
 };
 
 const processUserDeleteById = async (user) => {
@@ -64,7 +52,7 @@ const processUserUpdate = async (user, updateUser, new_password) => {
 };
 
 module.exports = {
-  userFromAuthToken,
+  userByTokenId,
   processUserDeleteById,
   processUserUpdate,
 };

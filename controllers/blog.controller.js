@@ -1,5 +1,4 @@
 const blogService = require("../services/blog.service");
-const userService = require("../services/user.service");
 const BlogDto = require("../dto/blog.dto");
 const { getContentBasedOnNegotiation } = require("../utils/responseType");
 
@@ -8,15 +7,10 @@ const handleCreateBlogRequest = async (req, res, next) => {
     const { title, content } = req.body;
 
     const blogDto = new BlogDto.BlogCreateRequestDto(title, content);
-    // const user = await userService.userFromAuthToken(
-    //   req.cookies["access-token"]
-    // );
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
 
-    const user = await userService.userFromAuthToken(accessToken);
+    const userData = req.user;
 
-    const isBlogCreated = await blogService.processNewBlog(user, blogDto);
+    const isBlogCreated = await blogService.processNewBlog(userData, blogDto);
 
     const newBlog = [isBlogCreated];
     const jsonBlogs = newBlog.map((blog) => blog.get({ plain: true }));
@@ -38,12 +32,11 @@ const handleCreateBlogRequest = async (req, res, next) => {
 
 const handleGetUserSelfBlogRequest = async (req, res, next) => {
   try {
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
+    const userData = req.user;
 
-    const user = await userService.userFromAuthToken(accessToken);
-
-    const isGetUserAllBlogs = await blogService.processSpecificUserBlog(user);
+    const isGetUserAllBlogs = await blogService.processSpecificUserBlog(
+      userData
+    );
     const jsonBlogs = isGetUserAllBlogs.map((blog) =>
       blog.get({ plain: true })
     );
@@ -63,18 +56,8 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
 
 const handleGetAllBlogsRequest = async (req, res, next) => {
   try {
-    const pageAsNumber = Number.parseInt(req.query.page);
-    const sizeAsNumber = Number.parseInt(req.query.size);
-
-    let page = 0;
-    if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
-      page = pageAsNumber;
-    }
-
-    let size = 5;
-    if (!Number.isNaN(sizeAsNumber) && sizeAsNumber > 0 && sizeAsNumber < 5) {
-      size = sizeAsNumber;
-    }
+    const page = Number.parseInt(req.query.page);
+    const size = Number.parseInt(req.query.size);
 
     const isGetAllBlogs = await blogService.processAllBlogs(page, size);
     const jsonBlogs = isGetAllBlogs.map((blogs) => blogs.get({ plain: true }));
@@ -102,12 +85,11 @@ const handleBlogDeletionRequest = async (req, res, next) => {
   try {
     const blogUUID = req.params.uuid;
 
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
-
-    const user = await userService.userFromAuthToken(accessToken);
-
-    const isDeletedBlog = await blogService.processDeleteBlog(user, blogUUID);
+    const userData = req.user;
+    const isDeletedBlog = await blogService.processDeleteBlog(
+      userData,
+      blogUUID
+    );
 
     return res.status(200).send("Delete success!");
   } catch (error) {
@@ -118,7 +100,6 @@ const handleBlogDeletionRequest = async (req, res, next) => {
 const handleBlogByIdRequest = async (req, res, next) => {
   try {
     const blogUUID = req.params.uuid;
-
     const isGetBlogById = await blogService.processBlogbyId(blogUUID);
 
     const getBlogById = [isGetBlogById];
@@ -130,7 +111,7 @@ const handleBlogByIdRequest = async (req, res, next) => {
     }
 
     res.type(negotiate);
-    const response = getContentBasedOnNegotiation(jsonBlogs, negotiate);
+    const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
 
     return res.status(200).send(response);
   } catch (error) {
@@ -143,13 +124,10 @@ const handleUpdateBlogRequest = async (req, res, next) => {
     const { title, content } = req.body;
     const blogDto = new BlogDto.BlogUpdateRequestDto(title, content);
     const blogUUID = req.params.uuid;
-    const authorizationHeader = req.headers["authorization"];
-    const accessToken = authorizationHeader.split(" ")[1];
 
-    const user = await userService.userFromAuthToken(accessToken);
-
+    const userData = req.user;
     const isUpdateBlog = await blogService.processUpdateBlog(
-      user,
+      userData,
       blogUUID,
       blogDto
     );

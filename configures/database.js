@@ -11,13 +11,13 @@ const sequelize = new Sequelize(
   }
 );
 
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log("Sync Success!");
-  })
-  .catch(() => {
-    console.log("Not synced.");
-  });
+// sequelize
+//   .sync({ force: false })
+//   .then(() => {
+//     console.log("Sync Success!");
+//   })
+//   .catch(() => {
+//     console.log("Not synced.");
+//   });
 
 module.exports = sequelize;
