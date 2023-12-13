@@ -47,6 +47,7 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
       new_password
     );
 
+
     // res.cookie("access-token", " ", {
     //   maxAge: -1,
     // });

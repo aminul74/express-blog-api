@@ -1,189 +1,167 @@
-// const userRepositories = require("../../repositories/user.repository");
-// const bcrypt = require("bcrypt");
-// const { decodeToken } = require("../../utils/JWT");
-// const {
-//   // userFromAuthToken,
-//   processUserDeleteById,
-//   processUserUpdate,
-// } = require("../../services/user.service");
+const userRepositories = require("../../repositories/user.repository");
+const bcrypt = require("bcrypt");
+const { decodeToken } = require("../../utils/JWT");
+const { usersDB } = require("../testDB");
+const {
+  // userFromAuthToken,
+  processUserDeleteById,
+  processUserUpdate,
+  userByTokenId,
+} = require("../../services/user.service");
 
-// jest.mock("../../repositories/user.repository");
-// jest.mock("bcrypt");
-// jest.mock("../../utils/JWT");
-// jest.mock("../../utils/errors");
+jest.mock("../../repositories/user.repository");
+jest.mock("bcrypt");
+jest.mock("../../utils/JWT");
+jest.mock("../../utils/errors");
 
-// describe("User Controllers", () => {
+describe("User Controllers", () => {
+  describe("userByTokenId", () => {
+    it("Test Case 1: Get User by Token Success!", async () => {
+      //Arrange
+      const user = usersDB[1];
 
-//   // describe("userFromAuthToken", () => {
-//   //   it("Test Case 1: Get User From Token Success!", async () => {
-//   //     // Arrange
-//   //     const userToken = "fake-token";
-//   //     const decodedTokenMock = { id: "12345" };
-//   //     const userMock = {
-//   //       id: "12345",
-//   //       username: "aminul123",
-//   //       email: "aminul@gmail.com",
-//   //       password: "a1234b4",
-//   //     };
+      //Moc
+      userRepositories.getUserById.mockResolvedValue(user);
 
-//   //     // Mock
-//   //     decodeToken.mockResolvedValue(decodedTokenMock);
-//   //     userRepositories.getUserById.mockResolvedValue(userMock);
+      //Act
+      const result = await userByTokenId(user);
 
-//   //     // Act
-//   //     const result = await userFromAuthToken(userToken);
+      //Assert
+      expect(userRepositories.getUserById).toHaveBeenCalledWith(user.id);
+      expect(result).toEqual(user);
+    });
 
-//   //     // Assert
-//   //     expect(decodeToken).toHaveBeenCalledWith(userToken);
-//   //     expect(userRepositories.getUserById).toHaveBeenCalledWith(
-//   //       decodedTokenMock.id
-//   //     );
-//   //     expect(result).toEqual(userMock);
-//   //   });
+    it("Test Case 2: Get User by Token Failure!", async () => {
+      //Arrange
+      const user = usersDB[1];
 
-//   //   it("Test Case 2: Get User From Token Failure!", async () => {
-//   //     // Arrange
-//   //     const userToken = "fake-token";
-//   //     const decodedTokenMock = { id: "12345" };
+      //Moc
+      userRepositories.getUserById.mockResolvedValue(false);
 
-//   //     // Mock
-//   //     decodeToken.mockResolvedValue(decodedTokenMock);
-//   //     userRepositories.getUserById.mockRejectedValue(
-//   //       new Error("Unauthorized!")
-//   //     );
+      //Act
+      const result = await userByTokenId(user);
 
-//   //     // Act and Assert
-//   //     await expect(userFromAuthToken(userToken)).rejects.toThrow(Error);
-//   //     expect(decodeToken).toHaveBeenCalledWith(userToken);
-//   //     expect(userRepositories.getUserById).toHaveBeenCalledWith(
-//   //       decodedTokenMock.id
-//   //     );
-//   //   });
+      //Assert
+      expect(userRepositories.getUserById).toHaveBeenCalledWith(user.id);
+      expect(result).toEqual(false);
+    });
+  });
 
-//   //   it("Test Case 3: Token Missing!", async () => {
-//   //     // Arrange
-//   //     const userToken = null;
+  describe("processUserDeleteById", () => {
+    it("Test Case 1: User Delete Success!", async () => {
+      // Arrange
+      const user = { id: "1234" };
 
-//   //     // Act and Assert
-//   //     await expect(userFromAuthToken(userToken)).rejects.toThrow();
-//     // });
-//   // });
+      // Mock
+      userRepositories.deleteUserById.mockResolvedValue(true);
 
-//   describe("processUserDeleteById", () => {
-//     it("Test Case 1: User Delete Success!", async () => {
-//       // Arrange
-//       const user = { id: "1234" };
+      // Act
+      const result = await processUserDeleteById(user);
 
-//       // Mock
-//       userRepositories.deleteUserById.mockResolvedValue(true);
+      // Assert
+      expect(userRepositories.deleteUserById).toHaveBeenCalledWith(user.id);
+      expect(result).toBe(true);
+    });
 
-//       // Act
-//       const result = await processUserDeleteById(user);
+    it("Test Case 2: User Delete Failure!", async () => {
+      // Arrange
+      const user = { id: "1234" };
 
-//       // Assert
-//       expect(userRepositories.deleteUserById).toHaveBeenCalledWith(user.id);
-//       expect(result).toBe(true);
-//     });
+      // Mock
+      userRepositories.deleteUserById.mockRejectedValue(
+        new Error("Please try again")
+      );
 
-//     it("Test Case 1: User Delete Failure!", async () => {
-//       // Arrange
-//       const user = { id: "1234" };
+      // Act and Assert
+      await expect(processUserDeleteById(user)).rejects.toThrow(Error);
+      expect(userRepositories.deleteUserById).toHaveBeenCalledWith(user.id);
+    });
+  });
 
-//       // Mock
-//       userRepositories.deleteUserById.mockRejectedValue(
-//         new Error("Please try again")
-//       );
+  describe("processUserUpdate", () => {
+    it("Test Case 1: User Password Update Success!", async () => {
+      // Arrange
+      const user = {
+        id: "1234",
+        password: "hashedOldPassword",
+      };
+      const updateUser = {
+        password: "old_Password",
+      };
+      const new_password = "new_Pass123";
+      const hashedNewPassword = "hashedNewPassword";
 
-//       // Act and Assert
-//       await expect(processUserDeleteById(user)).rejects.toThrow(Error);
-//       expect(userRepositories.deleteUserById).toHaveBeenCalledWith(user.id);
-//     });
-//   });
+      // Mock
+      bcrypt.genSalt.mockResolvedValue("salt");
+      bcrypt.compare.mockResolvedValue(true);
+      bcrypt.hash.mockResolvedValue(hashedNewPassword);
+      userRepositories.updatePasswordByUser.mockResolvedValue(true);
 
-//   describe("processUserUpdate", () => {
-//     it("Test Case 1: User Password Update Success!", async () => {
-//       // Arrange
-//       const user = {
-//         id: "1234",
-//         password: "hashedOldPassword",
-//       };
-//       const updateUser = {
-//         password: "old_Password",
-//       };
-//       const new_password = "new_Pass123";
-//       const hashedNewPassword = "hashedNewPassword";
+      // Act
+      const result = await processUserUpdate(user, updateUser, new_password);
 
-//       // Mock
-//       bcrypt.genSalt.mockResolvedValue("salt");
-//       bcrypt.compare.mockResolvedValue(true);
-//       bcrypt.hash.mockResolvedValue(hashedNewPassword);
-//       userRepositories.updatePasswordByUser.mockResolvedValue(true);
+      // Assert
+      expect(bcrypt.genSalt).toHaveBeenCalled();
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        updateUser.password,
+        user.password
+      );
+      expect(bcrypt.hash).toHaveBeenCalledWith(new_password, "salt");
+      expect(userRepositories.updatePasswordByUser).toHaveBeenCalledWith(
+        user.id,
+        hashedNewPassword
+      );
+      expect(result).toBe(true);
+    });
 
-//       // Act
-//       const result = await processUserUpdate(user, updateUser, new_password);
+    it("Test Case 2: User Old Password Wrong!", async () => {
+      // Arrange
+      const user = { id: "1234", password: "hashedOldPassword" };
+      const updateUser = { password: "old_Password" };
 
-//       // Assert
-//       expect(bcrypt.genSalt).toHaveBeenCalled();
-//       expect(bcrypt.compare).toHaveBeenCalledWith(
-//         updateUser.password,
-//         user.password
-//       );
-//       expect(bcrypt.hash).toHaveBeenCalledWith(new_password, "salt");
-//       expect(userRepositories.updatePasswordByUser).toHaveBeenCalledWith(
-//         user.id,
-//         hashedNewPassword
-//       );
-//       expect(result).toBe(true);
-//     });
+      const error = new Error("Wrong old password!");
+      error.status = 400;
+      // Mock
+      bcrypt.compare.mockResolvedValue(false);
 
-//     it("Test Case 2: User Old Password Wrong!", async () => {
-//       // Arrange
-//       const user = { id: "1234", password: "hashedOldPassword" };
-//       const updateUser = { password: "old_Password" };
+      // Act and Assert
+      await expect(
+        processUserUpdate(user, updateUser, "new_password")
+      ).rejects.toThrow(error);
 
-//       const error = new Error("Wrong old password!");
-//       error.status = 400;
-//       // Mock
-//       bcrypt.compare.mockResolvedValue(false);
+      expect(bcrypt.genSalt).toHaveBeenCalled();
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        updateUser.password,
+        user.password
+      );
+    });
 
-//       // Act and Assert
-//       await expect(
-//         processUserUpdate(user, updateUser, "new_password")
-//       ).rejects.toThrow(error);
+    it("Test Case 3: User Password Update Failure!", async () => {
+      // Arrange
+      const user = { id: "1234", password: "hashedOldPassword" };
+      const updateUser = { password: "old_Password" };
+      const new_password = "new_Pass123";
+      const error = new Error("Please try again");
+      error.status = 400;
+      // Mock
+      bcrypt.compare.mockResolvedValue(true);
+      bcrypt.genSalt.mockResolvedValue("salt");
+      bcrypt.hash.mockResolvedValue("hashedNewPassword");
+      userRepositories.updatePasswordByUser.mockResolvedValue(false);
 
-//       expect(bcrypt.genSalt).toHaveBeenCalled();
-//       expect(bcrypt.compare).toHaveBeenCalledWith(
-//         updateUser.password,
-//         user.password
-//       );
-//     });
-
-//     it("Test Case 3: User Password Update Failure!", async () => {
-//       // Arrange
-//       const user = { id: "1234", password: "hashedOldPassword" };
-//       const updateUser = { password: "old_Password" };
-//       const new_password = "new_Pass123";
-//       const error = new Error("Please try again");
-//       error.status = 400;
-//       // Mock
-//       bcrypt.compare.mockResolvedValue(true);
-//       bcrypt.genSalt.mockResolvedValue("salt");
-//       bcrypt.hash.mockResolvedValue("hashedNewPassword");
-//       userRepositories.updatePasswordByUser.mockResolvedValue(false);
-
-//       // Act and Assert
-//       await expect(
-//         processUserUpdate(user, updateUser, new_password)
-//       ).rejects.toThrow(error);
-//       expect(bcrypt.compare).toHaveBeenCalledWith(
-//         updateUser.password,
-//         user.password
-//       );
-//       expect(bcrypt.hash).toHaveBeenCalledWith(new_password, "salt");
-//       expect(userRepositories.updatePasswordByUser).toHaveBeenCalledWith(
-//         user.id,
-//         "hashedNewPassword"
-//       );
-//     });
-//   });
-// });
+      // Act and Assert
+      await expect(
+        processUserUpdate(user, updateUser, new_password)
+      ).rejects.toThrow(error);
+      expect(bcrypt.compare).toHaveBeenCalledWith(
+        updateUser.password,
+        user.password
+      );
+      expect(bcrypt.hash).toHaveBeenCalledWith(new_password, "salt");
+      expect(userRepositories.updatePasswordByUser).toHaveBeenCalledWith(
+        user.id,
+        "hashedNewPassword"
+      );
+    });
+  });
+});

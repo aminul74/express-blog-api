@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const UserDtoFilter = require("../../dto/user.dto");
 const userService = require("../../services/user.service");
+const { usersDB, blogsDB } = require("../testDB");
 const { getContentBasedOnNegotiation } = require("../../utils/responseType");
 const {
   handleProfileGetRequest,
@@ -24,19 +25,11 @@ describe("User Controllers", () => {
     it("Test Case 1: Profile Get Request Success!", async () => {
       // Arrange
 
-      const expectedUser = {
-        id: "12345",
-        username: "aminul123",
-        email: "aminul@gmail.com",
-      };
+      const expectedUser = usersDB[0];
       const req = {
         user: {
           expectedUser,
-          toJSON: jest.fn().mockReturnThis({
-            id: "12345",
-            username: "aminul123",
-            email: "aminul@gmail.com",
-          }),
+          toJSON: jest.fn().mockReturnThis(expectedUser),
         },
         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
       };
@@ -90,18 +83,19 @@ describe("User Controllers", () => {
       expect(res.status).toHaveBeenCalledWith(406);
       expect(res.send).toHaveBeenCalledWith("Not Acceptable");
     });
-
-    // Add more test cases as needed
   });
 
   describe("ProfileDeletionRequest", () => {
     it("Test case 1: Profile Delete success!", async () => {
       // Arrange
       const req = {
-        cookies: {
-          "access-token": "fake-token",
+        user: {
+          id: "12345",
         },
       };
+
+      const userData = req.user;
+      const expectedUser = usersDB[0];
 
       const res = {
         status: jest.fn().mockReturnThis(),
@@ -109,25 +103,14 @@ describe("User Controllers", () => {
       };
 
       const next = jest.fn();
-      const fakeUserData = {
-        id: "userFakeId",
-      };
 
-      // Mock
-      userService.userFromAuthToken.mockResolvedValue(fakeUserData);
-      userService.processUserDeleteById.mockResolvedValue(fakeUserData);
+      userService.processUserDeleteById.mockResolvedValue(expectedUser);
 
       // Act
       await handleProfileDeletionRequest(req, res, next);
 
       // Assert
-      expect(userService.userFromAuthToken).toHaveBeenCalledWith(
-        req.cookies["access-token"]
-      );
-
-      expect(userService.processUserDeleteById).toHaveBeenCalledWith(
-        fakeUserData
-      );
+      expect(userService.processUserDeleteById).toHaveBeenCalledWith(userData);
 
       expect(res.status).toHaveBeenLastCalledWith(200);
       expect(res.send).toHaveBeenCalledWith("Delete Success!");
@@ -135,138 +118,126 @@ describe("User Controllers", () => {
       expect(next).not.toHaveBeenCalled();
     });
 
-    // it("Test case 2: Profile Deletion Failure", async () => {
-    //   // Arrange
-    //   const req = {
-    //     cookies: {
-    //       "access-token": "fake-token",
-    //     },
-    //   };
-    //   const res = {
-    //     status: jest.fn().mockReturnThis(),
-    //     send: jest.fn(),
-    //   };
+    it("Test case 2: Profile Deletion Failure", async () => {
+      //Arrange
+      const req = {
+        user: {
+          id: "12345",
+        },
+      };
 
-    //   const fakeUserData = {
-    //     id: "userFakeId",
-    //   };
+      const userData = req.user;
 
-    //   const next = jest.fn();
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-    //   // Mock
-    //   userService.userFromAuthToken.mockResolvedValue(fakeUserData);
-    //   userService.processUserDeleteById.mockRejectedValue(
-    //     new Error("Deletion failure")
-    //   );
+      const next = jest.fn();
+      const error = new Error("Please try again");
+      //Moc
+      userService.processUserDeleteById.mockRejectedValue(error);
 
-    //   // Act
-    //   await handleProfileDeletionRequest(req, res, next);
+      // Act
+      await handleProfileDeletionRequest(req, res, next);
 
-    //   // Assert
-    //   expect(userService.userFromAuthToken).toHaveBeenCalledWith(
-    //     req.cookies["access-token"]
-    //   );
-    //   expect(res.status).not.toHaveBeenCalledWith(200);
-    //   expect(res.send).not.toHaveBeenCalledWith("Deletion Failure!");
-    //   expect(next).toHaveBeenCalledWith(expect.any(Error));
-    // });
+      // Assert
+      expect(userService.processUserDeleteById).toHaveBeenCalledWith(userData);
+
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
+      expect(next).toHaveBeenCalledWith(error);
+    });
   });
 
-  // describe("PasswordUpdateRequest", () => {
-  //   it("Test case 1: Password Update success!", async () => {
-  //     // Arrange
+  describe("PasswordUpdateRequest", () => {
+    it("Test case 1: Password Update success!", async () => {
+      // Arrange
+      const user = usersDB[0];
+      const req = {
+        body: {
+          old_password: "12354",
+          new_password: "12345",
+        },
+        user,
+      };
+      const userDto = { old_password: "12354" };
+      const userData = req.user;
 
-  //     const req = {
-  //       body: {
-  //         old_password: "oldPass",
-  //         new_password: "newPass",
-  //       },
-  //       cookies: {
-  //         "access-token": "fake-token",
-  //       },
-  //     };
-  //     const res = {
-  //       status: jest.fn().mockReturnThis(),
-  //       send: jest.fn(),
-  //       cookie: jest.fn(),
-  //     };
-  //     const fakeUser = {
-  //       id: "44678312-7204-4fa6-be5d-1b7de9949aeb",
-  //       password:
-  //         "$2b$10$Z1s4VoX/NQZ3c8gLcEaaZOeXh0w7C9sRcOBypl1vcukznvc9ScWuu",
-  //     };
-  //     const next = jest.fn();
-  //     //Moc
-  //     userService.userFromAuthToken.mockResolvedValue(fakeUser);
-  //     UserDtoFilter.UserUpdateRequestDto.mockReturnValue({
-  //       password: "oldPass",
-  //     });
+      const { old_password, new_password } = req.body;
 
-  //     userService.processUserUpdate.mockResolvedValue(
-  //       fakeUser,
-  //       req.body.old_password,
-  //       req.body.new_password
-  //     );
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        cookie: jest.fn(),
+      };
 
-  //     //Act
-  //     await handlePasswordUpdateRequest(req, res, next);
+      const next = jest.fn();
+      //Moc
+      UserDtoFilter.UserUpdateRequestDto.mockReturnValue(userDto);
+      userService.processUserUpdate.mockResolvedValue(true);
 
-  //     //Assert
+      //Act
+      await handlePasswordUpdateRequest(req, res, next);
 
-  //     expect(userService.userFromAuthToken).toHaveBeenCalledWith(
-  //       req.cookies["access-token"]
-  //     );
+      //Assert
+      expect(UserDtoFilter.UserUpdateRequestDto).toHaveBeenCalledWith(
+        old_password
+      );
+      expect(userService.processUserUpdate).toHaveBeenCalledWith(
+        userData,
+        userDto,
+        new_password
+      );
 
-  //     expect(res.status).toHaveBeenCalledWith(200);
-  //     expect(res.send).toHaveBeenCalledWith("Password update success!");
-  //     expect(res.cookie).toHaveBeenCalledWith("access-token", " ", {
-  //       maxAge: -1,
-  //     });
-  //     expect(next).not.toHaveBeenCalled();
-  //   });
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith("Password update success!");
+      expect(next).not.toHaveBeenCalled();
+    });
 
-  //   it("Test case 2: Password Update Failure!", async () => {
-  //     // Arrange
+    it("Test case 2: Password Update Failure!", async () => {
+      // Arrange
+      const user = usersDB[0];
+      const req = {
+        body: {
+          old_password: "12354",
+          new_password: "12345",
+        },
+        user,
+      };
+      const userDto = { old_password: "12354" };
+      const userData = req.user;
 
-  //     const req = {
-  //       body: {
-  //         old_password: "oldPass",
-  //         new_password: "newPass",
-  //       },
-  //       cookies: {
-  //         "access-token": "fake-token",
-  //       },
-  //     };
-  //     const res = {
-  //       status: jest.fn().mockReturnThis(),
-  //       send: jest.fn(),
-  //       cookie: jest.fn(),
-  //     };
-  //     const fakeUser = {
-  //       id: "44678312-7204-4fa6-be5d-1b7de9949aeb",
-  //       password:
-  //         "$2b$10$Z1s4VoX/NQZ3c8gLcEaaZOeXh0w7C9sRcOBypl1vcukznvc9ScWuu",
-  //     };
-  //     const next = jest.fn();
-  //     //Moc
-  //     userService.userFromAuthToken.mockResolvedValue(fakeUser);
-  //     UserDtoFilter.UserUpdateRequestDto.mockReturnValue({
-  //       password: "oldPass",
-  //     });
+      const { old_password, new_password } = req.body;
 
-  //     userService.processUserUpdate.mockResolvedValue(null);
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        cookie: jest.fn(),
+      };
 
-  //     //Act
-  //     await handlePasswordUpdateRequest(req, res, next);
+      const next = jest.fn();
+      //Moc
+      UserDtoFilter.UserUpdateRequestDto.mockReturnValue(userDto);
+      const updateError = new Error("Invalid old password");
+      userService.processUserUpdate.mockRejectedValue(updateError);
 
-  //     //Assert
+      //Act
+      await handlePasswordUpdateRequest(req, res, next);
 
-  //     expect(userService.userFromAuthToken).toHaveBeenCalledWith(
-  //       req.cookies["access-token"]
-  //     );
-  //     expect(next).toHaveBeenCalledWith(
-  //       Error("Unable to update password please try again!")
-  //     );
-  //   });
-  // });
+      //Assert
+      expect(UserDtoFilter.UserUpdateRequestDto).toHaveBeenCalledWith(
+        old_password
+      );
+      expect(userService.processUserUpdate).toHaveBeenCalledWith(
+        userData,
+        userDto,
+        new_password
+      );
+
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
+      expect(next).toHaveBeenCalledWith(updateError);
+    });
+  });
 });

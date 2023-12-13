@@ -17,14 +17,10 @@ const handleUserRegistration = async (req, res, next) => {
 
     const userRegistrationToken = createToken(registeredUser.id);
 
-    // res.cookie("access-token", userRegistrationToken, {
-    //   maxAge: 30 * 24 * 60 * 60,
-    // });
-
     const tokenResponse = { token: userRegistrationToken };
     const token = [tokenResponse];
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
+ 
     if (!negotiate) {
       return res.status(406).send("Not Acceptable");
     }
@@ -67,6 +63,7 @@ const handleLoginRequest = async (req, res, next) => {
 
     res.type(negotiate);
     const response = await getContentBasedOnNegotiation(token, negotiate);
+ 
     res.status(200);
     res.send(response);
   } catch (error) {
