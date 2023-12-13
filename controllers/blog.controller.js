@@ -14,7 +14,7 @@ const handleCreateBlogRequest = async (req, res, next) => {
 
     const newBlog = [isBlogCreated];
     const jsonBlogs = newBlog.map((blog) => blog.get({ plain: true }));
-    
+
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
     if (!negotiate) {
@@ -37,6 +37,7 @@ const handleGetUserSelfBlogRequest = async (req, res, next) => {
     const isGetUserAllBlogs = await blogService.processSpecificUserBlog(
       userData
     );
+
     const jsonBlogs = isGetUserAllBlogs.map((blog) =>
       blog.get({ plain: true })
     );

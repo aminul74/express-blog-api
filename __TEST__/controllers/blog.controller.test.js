@@ -75,134 +75,163 @@ describe("Blog Controllers", () => {
         negotiate
       );
 
-
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.type).toHaveBeenCalledWith(negotiate);
       expect(res.send).toHaveBeenCalledWith(response);
     });
 
-    //     it("Test Case 1: Blog Create Failure!", async () => {
-    //       // Arrange
-    //       const req = {
-    //         body: {
-    //           title: "fake_title",
-    //           content: "fake_content",
-    //         },
-    //         cookies: {
-    //           "access-token": "fake-token",
-    //         },
-    //       };
+    it("Test Case 1: Blog Create Failure!", async () => {
+      // Arrange
 
-    //       const res = {
-    //         status: jest.fn().mockReturnThis(),
-    //         send: jest.fn(),
-    //       };
+      const req = {
+        body: {
+          title: "Test 1",
+          content: "Hello world 1!",
+        },
+        accepts: jest.fn().mockReturnValue("json"),
+        user: {
+          id: "12345",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
+        },
+      };
 
-    //       const fakeUser = {
-    //         id: "fakeId",
-    //       };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
+      const next = jest.fn();
 
-    //       const next = jest.fn();
+      const blogDto = {
+        title: "Test 1",
+        content: "Hello world 1!",
+      };
 
-    //       // Mock
-    //       BlogDto.BlogCreateRequestDto.mockReturnValue(req.body);
-    //       userService.userFromAuthToken.mockResolvedValue(fakeUser);
-    //       blogService.processNewBlog.mockResolvedValue(null);
+      const userData = req.user;
+      const { title, content } = req.body;
+      //Moc
+      BlogDto.BlogCreateRequestDto.mockReturnValue(blogDto);
+      const error = new Error("Create Fail");
+      blogService.processNewBlog.mockRejectedValue(error);
 
-    //       // Act
-    //       await handleCreateBlogRequest(req, res, next);
+      // Act
+      await handleCreateBlogRequest(req, res, next);
 
-    //       // Assert
+      //Assert
+      expect(BlogDto.BlogCreateRequestDto).toHaveBeenCalledWith(title, content);
+      expect(blogService.processNewBlog).toHaveBeenCalledWith(
+        userData,
+        blogDto
+      );
 
-    //       expect(next).toHaveBeenCalledWith(Error("Blog create fail"));
-    //     });
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.type).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith(error);
+      expect(next).toHaveBeenCalledWith(error);
+    });
   });
 
-  //   describe("handleGetUserSelfBlogRequest", () => {
-  //     it("Test Case 1: User Self Blog Get Success!", async () => {
-  //       // Arrange
-  //       const req = {
-  //         cookies: {
-  //           "access-token": "fake-token",
-  //         },
-  //         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
-  //       };
+  describe("handleGetUserSelfBlogRequest", () => {
+    it("Test Case 1: User Self Blog Get Success!", async () => {
+      // Arrange
+      const req = {
+        body: {
+          title: "Test 1",
+          content: "Hello world 1!",
+        },
+        accepts: jest.fn().mockReturnValue("json"),
+        user: {
+          id: "12345",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
+        },
+      };
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //         type: jest.fn(),
-  //       };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
 
-  //       const user = {
-  //         id: "12345",
-  //         username: "aminul123",
-  //         email: "aminul@gmail.com",
-  //         password: "a1234b4",
-  //       };
+      const userData = req.user;
+      const response = [blogsDB[1]];
+      const isGetUserAllBlogs = [{ get: () => blogsDB[1] }];
 
-  //       const blogList = {
-  //         id: "1",
-  //         title: "Test 1",
-  //         content: "Hello world 1!",
-  //         authorId: "1",
-  //       };
-  //       const next = jest.fn();
+      const jsonBlogs = isGetUserAllBlogs.map((blog) =>
+        blog.get({ plain: true })
+      );
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
+      const next = jest.fn();
 
-  //       //Moc
-  //       userService.userFromAuthToken.mockResolvedValue(user);
-  //       blogService.processSpecificUserBlog.mockResolvedValue(blogList);
-  //       getContentBasedOnNegotiation.mockReturnValue(blogList);
+      // Mock
+      blogService.processSpecificUserBlog.mockResolvedValue(isGetUserAllBlogs);
 
-  //       //Act
-  //       await handleGetUserSelfBlogRequest(req, res, next);
+      // Mock
+      getContentBasedOnNegotiation.mockResolvedValue(response);
 
-  //       expect(userService.userFromAuthToken).toHaveBeenCalledWith("fake-token");
-  //       expect(blogService.processSpecificUserBlog).toHaveBeenCalledWith(user);
-  //       expect(req.accepts).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-  //       expect(res.type).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-  //       expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(blogList, [
-  //         "json",
-  //         "text",
-  //         "xml",
-  //         "html",
-  //       ]);
-  //       expect(res.status).toHaveBeenCalledWith(200);
-  //       expect(res.send).toHaveBeenCalledWith(blogList);
-  //     });
+      await handleGetUserSelfBlogRequest(req, res, next);
 
-  //     it("Test Case 2: User Self Blog Get Failure!", async () => {
-  //       // Arrange
-  //       const req = {
-  //         cookies: {
-  //           "access-token": "fake-token",
-  //         },
-  //         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
-  //       };
+      // Assert
+      expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
+        jsonBlogs,
+        negotiate
+      );
+      expect(blogService.processSpecificUserBlog).toHaveBeenCalledWith(
+        userData
+      );
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.type).toHaveBeenCalledWith(negotiate);
+      expect(res.send).toHaveBeenCalledWith(response);
+      expect(next).not.toHaveBeenCalled();
+    });
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //         type: jest.fn(),
-  //       };
-  //       const next = jest.fn();
+    it("Test Case 2: User Self Blog Get Failure!", async () => {
+      // Arrange
+      const req = {
+        body: {
+          title: "Test 1",
+          content: "Hello world 1!",
+        },
+        accepts: jest.fn().mockReturnValue("json"),
+        user: {
+          id: "12345",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
+        },
+      };
 
-  //       //Moc
-  //       userService.userFromAuthToken.mockRejectedValue(new Error("Error"));
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
 
-  //       //Act
-  //       await handleGetUserSelfBlogRequest(req, res, next);
+      const isGetUserAllBlogs = [{ get: () => blogsDB[1] }];
+      const userData = req.user;
+      const next = jest.fn();
 
-  //       expect(userService.userFromAuthToken).toHaveBeenCalledWith("fake-token");
-  //       expect(blogService.processSpecificUserBlog).not.toHaveBeenCalled();
-  //       expect(req.accepts).not.toHaveBeenCalled();
-  //       expect(res.type).not.toHaveBeenCalled();
-  //       expect(getContentBasedOnNegotiation).not.toHaveBeenCalled();
-  //       expect(res.status).not.toHaveBeenCalled();
-  //       expect(res.send).not.toHaveBeenCalled();
-  //       expect(next).toHaveBeenCalledWith(expect.any(Error));
-  //     });
-  //   });
+      //Moc
+      const error = new Error("Create Fail");
+      blogService.processSpecificUserBlog.mockRejectedValue(error);
+
+      //Act
+      await handleGetUserSelfBlogRequest(req, res, next);
+
+      // Assert
+      expect(blogService.processSpecificUserBlog).toHaveBeenCalledWith(
+        userData
+      );
+
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.type).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
   //   describe("handleGetAllBlogsRequest", () => {
   //     it("Test case 1: All Blog Get Success!", async () => {
