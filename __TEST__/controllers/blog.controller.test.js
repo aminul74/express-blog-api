@@ -1,7 +1,7 @@
 const blogService = require("../../services/blog.service");
 const BlogDto = require("../../dto/blog.dto");
 const userService = require("../../services/user.service");
-const { blogsDB } = require("../testDB");
+const { blogsDB, usersDB } = require("../testDB");
 const { getContentBasedOnNegotiation } = require("../../utils/responseType");
 const {
   handleCreateBlogRequest,
@@ -233,339 +233,360 @@ describe("Blog Controllers", () => {
     });
   });
 
-  //   describe("handleGetAllBlogsRequest", () => {
-  //     it("Test case 1: All Blog Get Success!", async () => {
-  //       //Arrange
-  //       const req = {
-  //         query: { page: "0", size: "5" },
-  //         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
-  //       };
+  describe("handleGetAllBlogsRequest", () => {
+    it("Test case 1: All Blog Get Success!", async () => {
+      //Arrange
+      const req = {
+        query: { page: 0, size: 1 },
+        accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
+      };
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //         type: jest.fn(),
-  //       };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
 
-  //       const blogList = {
-  //         id: "1",
-  //         title: "Test 1",
-  //         content: "Hello world 1!",
-  //         authorId: "1",
-  //       };
-  //       const next = jest.fn();
+      const next = jest.fn();
+      const { page, size } = req.query;
+      const response = blogsDB[1];
+      const isGetAllBlogs = [{ get: () => blogsDB[1] }];
+      const jsonBlogs = isGetAllBlogs.map((blogs) =>
+        blogs.get({ plain: true })
+      );
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
+      //Mock
+      blogService.processAllBlogs.mockResolvedValue(isGetAllBlogs);
+      getContentBasedOnNegotiation.mockResolvedValue(response);
 
-  //       //Moc
-  //       blogService.processAllBlogs.mockResolvedValue(blogList);
-  //       getContentBasedOnNegotiation.mockReturnValue(blogList);
+      //Act
+      await handleGetAllBlogsRequest(req, res, next);
 
-  //       //Act
+      //Assert
+      expect(blogService.processAllBlogs).toHaveBeenCalledWith(page, size);
+      expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
+        jsonBlogs,
+        negotiate
+      );
 
-  //       await handleGetAllBlogsRequest(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(req.accepts).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
+      expect(res.type).toHaveBeenCalledWith(negotiate);
+      expect(res.send).toHaveBeenCalledWith(response);
+    });
 
-  //       //Assert
+    it("Test case 2: All Blog Get Failure!", async () => {
+      //Arrange
+      const req = {
+        query: { page: 0, size: 5 },
+        accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
+      };
 
-  //       expect(blogService.processAllBlogs).toHaveBeenCalledWith(0, 5);
-  //       expect(req.accepts).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-  //       expect(res.type).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-  //       expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(blogList, [
-  //         "json",
-  //         "text",
-  //         "xml",
-  //         "html",
-  //       ]);
-  //       expect(res.status).toHaveBeenCalledWith(200);
-  //       expect(res.send).toHaveBeenCalledWith(blogList);
-  //       expect(next).not.toHaveBeenCalled();
-  //     });
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
+      const next = jest.fn();
 
-  //     it("Test case 2: All Blog Get Failure!", async () => {
-  //       //Arrange
-  //       const req = {
-  //         query: { page: "0", size: "5" },
-  //         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
-  //       };
+      //Moc
+      blogService.processAllBlogs.mockRejectedValue();
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //         type: jest.fn(),
-  //       };
-  //       const next = jest.fn();
+      //Act
 
-  //       //Moc
-  //       blogService.processAllBlogs.mockRejectedValue();
+      await handleGetAllBlogsRequest(req, res, next);
 
-  //       //Act
+      //Assert
 
-  //       await handleGetAllBlogsRequest(req, res, next);
+      expect(blogService.processAllBlogs).not.toHaveBeenCalledWith();
+      expect(req.accepts).not.toHaveBeenCalledWith();
+      expect(res.type).not.toHaveBeenCalledWith();
+      expect(getContentBasedOnNegotiation).not.toHaveBeenCalledWith();
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
+      expect(next).toHaveBeenCalledTimes(1);
+    });
+  });
 
-  //       //Assert
+  describe("handleBlogDeletionRequest", () => {
+    it("Test Case 1: Blog Delete Success!", async () => {
+      //Arrange
+      const req = {
+        params: {
+          uuid: "uuid-123",
+        },
+        user: {
+          id: "12345",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
+        },
+      };
 
-  //       expect(blogService.processAllBlogs).not.toHaveBeenCalledWith();
-  //       expect(req.accepts).not.toHaveBeenCalledWith();
-  //       expect(res.type).not.toHaveBeenCalledWith();
-  //       expect(getContentBasedOnNegotiation).not.toHaveBeenCalledWith();
-  //       expect(res.status).not.toHaveBeenCalledWith();
-  //       expect(res.send).not.toHaveBeenCalledWith();
-  //       expect(next).toHaveBeenCalledTimes(1);
-  //     });
-  //   });
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-  //   describe("handleBlogDeletionRequest", () => {
-  //     it("Test Case 1: Blog Delete Success!", async () => {
-  //       //Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         cookies: { "access-token": "fake-token" },
-  //       };
+      const blogUUID = req.params.uuid;
+      const userData = req.user;
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //       };
+      const next = jest.fn();
+      //Moc
 
-  //       const user = {
-  //         id: "12345",
-  //         username: "aminul123",
-  //         email: "aminul@gmail.com",
-  //         password: "a1234b4",
-  //         createdAt: "12-12-12",
-  //         updatedAt: "12-12-12",
-  //       };
+      blogService.processDeleteBlog.mockResolvedValue(true);
 
-  //       //Moc
-  //       userService.userFromAuthToken.mockResolvedValue(user);
+      // Act
+      await handleBlogDeletionRequest(req, res, next);
 
-  //       blogService.processDeleteBlog.mockResolvedValue(true);
+      // Assert
+      expect(blogService.processDeleteBlog).toHaveBeenCalledWith(
+        userData,
+        blogUUID
+      );
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith("Delete success!");
+    });
 
-  //       // Act
-  //       await handleBlogDeletionRequest(req, res);
+    it("Test case 2: Unable to delete blog", async () => {
+      //Arrange
+      const req = {
+        params: {
+          uuid: "uuid-123",
+        },
+        user: {
+          id: "12345",
+          username: "aminul123",
+          email: "aminul@gmail.com",
+          password: "a1234b4",
+        },
+      };
 
-  //       // Assert
-  //       expect(userService.userFromAuthToken).toHaveBeenCalledWith("fake-token");
-  //       expect(blogService.processDeleteBlog).toHaveBeenCalledWith(
-  //         user,
-  //         "blog-uuid"
-  //       );
-  //       expect(res.status).toHaveBeenCalledWith(200);
-  //       expect(res.send).toHaveBeenCalledWith("Delete success!");
-  //     });
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-  //     it("Test case 2: Unable to delete blog", async () => {
-  //       // Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         cookies: { "access-token": "fake-token" },
-  //       };
+      const blogUUID = req.params.uuid;
+      const userData = req.user;
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //       };
+      const next = jest.fn();
+      //Moc
+      const error = new Error("Errorr");
+      blogService.processDeleteBlog.mockRejectedValue(error);
 
-  //       // Mock
-  //       userService.userFromAuthToken = jest.fn().mockResolvedValue(null);
+      // Act
+      await handleBlogDeletionRequest(req, res, next);
 
-  //       blogService.processDeleteBlog = jest.fn().mockResolvedValue(false);
+      // Assert
+      expect(blogService.processDeleteBlog).toHaveBeenCalledWith(
+        userData,
+        blogUUID
+      );
+      expect(res.status).not.toHaveBeenCalledWith(200);
+      expect(res.send).not.toHaveBeenCalledWith();
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 
-  //       const next = jest.fn();
+  describe("handleBlogByIdRequest", () => {
+    it("Test case 1: Get Blog by Id Success", async () => {
+      // Arrange
+      const req = {
+        params: {
+          uuid: "uuid-123",
+        },
+        accepts: jest.fn().mockReturnValue("json"),
+      };
 
-  //       // Act
-  //       await handleBlogDeletionRequest(req, res, next);
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
+      const next = jest.fn();
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
+      const response = blogsDB[1];
+      const isGetBlogById = { get: () => blogsDB[1] };
+      const getBlogById = [isGetBlogById];
+      const jsonBlogs = getBlogById.map((blog) => blog.get({ plain: true }));
+      const blogUUID = req.params.uuid;
+      // Mock
+      blogService.processBlogbyId.mockResolvedValue(isGetBlogById);
+      getContentBasedOnNegotiation.mockReturnValue(response);
 
-  //       // Assert
-  //       expect(userService.userFromAuthToken).toHaveBeenCalledWith("fake-token");
-  //       expect(blogService.processDeleteBlog).toHaveBeenCalledWith(
-  //         null,
-  //         "blog-uuid"
-  //       );
-  //       expect(next).toHaveBeenCalledTimes(1);
-  //     });
-  //   });
+      // Act
+      await handleBlogByIdRequest(req, res, next);
 
-  //   describe("handleBlogByIdRequest", () => {
-  //     it("Test case 1: Get Blog by Id Success", async () => {
-  //       // Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
-  //       };
+      // Assert
+      expect(blogService.processBlogbyId).toHaveBeenCalledWith(blogUUID);
+      expect(res.type).toHaveBeenCalledWith(negotiate);
+      expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
+        jsonBlogs,
+        negotiate
+      );
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.send).toHaveBeenCalledWith(response);
+    });
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //         type: jest.fn(),
-  //       };
+    it("Test case 2: Unable to get Blog by Id", async () => {
+      // Arrange
+      const req = {
+        params: { uuid: "uuid-123" },
+        accepts: jest.fn().mockReturnValue("json"),
+      };
 
-  //       const blogList = {
-  //         id: "1",
-  //         title: "Test 1",
-  //         content: "Hello world 1!",
-  //         authorId: "1",
-  //         createdAt: "12-12-12",
-  //         updatedAt: "12-12-12",
-  //       };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
 
-  //       // Mock
-  //       blogService.processBlogbyId = jest.fn().mockResolvedValue(blogList);
-  //       getContentBasedOnNegotiation.mockReturnValue([blogList]);
+      const next = jest.fn();
+      const blogUUID = req.params.uuid;
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
+      // Mock
+      const error = new Error("errorr");
+      blogService.processBlogbyId.mockResolvedValue(error);
 
-  //       // Act
-  //       await handleBlogByIdRequest(req, res);
+      // Act
+      await handleBlogByIdRequest(req, res, next);
 
-  //       // Assert
-  //       expect(blogService.processBlogbyId).toHaveBeenCalledWith("blog-uuid");
-  //       expect(req.accepts).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-  //       expect(res.type).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-  //       expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
-  //         [blogList],
-  //         ["json", "text", "xml", "html"]
-  //       );
-  //       expect(res.status).toHaveBeenCalledWith(200);
-  //       expect(res.send).toHaveBeenCalledWith([blogList]);
-  //     });
+      // Assert
+      expect(blogService.processBlogbyId).toHaveBeenCalledWith(blogUUID);
+      expect(req.accepts).not.toHaveBeenCalledWith(negotiate);
+      expect(res.status).not.toHaveBeenCalledWith(404);
+      expect(res.send).not.toHaveBeenCalledWith();
+      expect(next).toHaveBeenCalledTimes(1);
+    });
 
-  //     it("Test case 2: Unable to get Blog by Id", async () => {
-  //       // Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         accepts: jest.fn().mockReturnValue(["json", "text", "xml", "html"]),
-  //       };
+    it("Test case 3: Not Acceptable", async () => {
+      // Arrange
+      const req = {
+        params: { uuid: "uuid-123" },
+        accepts: jest.fn().mockReturnValue(null),
+      };
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //         type: jest.fn(),
-  //       };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+      };
 
-  //       const next = jest.fn();
+      const next = jest.fn();
 
-  //       // Mock
-  //       blogService.processBlogbyId.mockResolvedValue(null);
+      // Act
+      await handleBlogByIdRequest(req, res, next);
 
-  //       // Act
-  //       await handleBlogByIdRequest(req, res, next);
+      // Assert
+      expect(next).toHaveBeenCalledTimes(1);
+    });
+  });
 
-  //       // Assert
-  //       expect(blogService.processBlogbyId).toHaveBeenCalledWith("blog-uuid");
-  //       expect(req.accepts).not.toHaveBeenCalledWith([
-  //         "json",
-  //         "text",
-  //         "xml",
-  //         "html",
-  //       ]);
-  //       expect(res.status).not.toHaveBeenCalledWith(404);
-  //       expect(res.send).not.toHaveBeenCalledWith(
-  //         "Unable to process! Please try again"
-  //       );
-  //       expect(next).toHaveBeenCalledTimes(1);
-  //     });
+  describe("handleUpdateBlogRequest", () => {
+    it("Test case 1: Update Blog Success!", async () => {
+      // Arrange
+      const req = {
+        params: { uuid: "uuid-123" },
+        body: {
+          title: "Test 1",
+          content: "Hello world 1!",
+        },
+        accepts: jest.fn().mockReturnValue("json"),
+        user: usersDB[1],
+      };
 
-  //     it("Test case 3: Not Acceptable", async () => {
-  //       // Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         accepts: jest.fn().mockReturnValue(null),
-  //       };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //       };
+      const { title, content } = req.body;
+      const next = jest.fn();
+      const response = blogsDB[1];
+      const updateBlog = {
+        get: (_params) => blogsDB[1],
+      };
 
-  //       const next = jest.fn();
+      const getBlogById = [updateBlog];
+      const jsonBlogs = getBlogById.map((blog) => blog.get({ plain: true }));
+      const userData = req.user;
+      const blogUUID = req.params.uuid;
+      const blogDto = {
+        title: "Test 1",
+        content: "Hello world 1!",
+      };
 
-  //       // Act
-  //       await handleBlogByIdRequest(req, res, next);
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
-  //       // Assert
-  //       expect(next).toHaveBeenCalledTimes(1);
-  //     });
-  //   });
+      // Mock
 
-  //   describe("handleUpdateBlogRequest", () => {
-  //     it("Test case 1: Update Blog Success!", async () => {
-  //       // Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         body: { title: "fake_title", content: "fake_content" },
-  //         cookies: { "access-token": "fake-token" },
-  //       };
+      BlogDto.BlogUpdateRequestDto.mockReturnValue(blogDto);
+      blogService.processUpdateBlog.mockResolvedValue(updateBlog);
+      getContentBasedOnNegotiation.mockResolvedValue(response);
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //       };
+      //Act
+      await handleUpdateBlogRequest(req, res, next);
 
-  //       const user = {
-  //         id: "12345",
-  //         username: "aminul123",
-  //         email: "aminul@gmail.com",
-  //         password: "a1234b4",
-  //       };
+      //Assert
+      expect(BlogDto.BlogUpdateRequestDto).toHaveBeenCalledWith(title, content);
+      expect(blogService.processUpdateBlog).toHaveBeenCalledWith(
+        userData,
+        blogUUID,
+        blogDto
+      );
 
-  //       const next = jest.fn();
+      expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
+        jsonBlogs,
+        negotiate
+      );
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.type).toHaveBeenCalledWith(negotiate);
+      expect(res.send).toHaveBeenCalledWith(response);
+    });
 
-  //       // Mock
-  //       userService.userFromAuthToken.mockResolvedValue(user);
-  //       const blogDto = new BlogDto.BlogUpdateRequestDto(
-  //         "fake_title",
-  //         "fake-token"
-  //       );
-  //       blogService.processUpdateBlog.mockResolvedValue(true);
+    it("Test case 2: Unable to update Blog", async () => {
+      // Arrange
+      const req = {
+        params: { uuid: "uuid-123" },
+        body: {
+          title: "Test 1",
+          content: "Hello world 1!",
+        },
+        accepts: jest.fn().mockReturnValue("json"),
+        user: usersDB[1],
+      };
 
-  //       // Act
-  //       await handleUpdateBlogRequest(req, res, next);
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        send: jest.fn(),
+        type: jest.fn(),
+      };
 
-  //       // Assert
-  //       expect(userService.userFromAuthToken).toHaveBeenCalledWith("fake-token");
-  //       expect(blogService.processUpdateBlog).toHaveBeenCalledWith(
-  //         user,
-  //         "blog-uuid",
-  //         blogDto
-  //       );
-  //       expect(res.status).toHaveBeenCalledWith(200);
-  //       expect(res.send).toHaveBeenCalledWith("Update success!");
-  //       expect(next).not.toHaveBeenCalledWith();
-  //     });
+      const next = jest.fn();
+      const blogDto = {
+        title: "Test 1",
+        content: "Hello world 1!",
+      };
+      const userData = req.user;
+      const blogUUID = req.params.uuid;
+      const { title, content } = req.body;
+      // Mock
+      BlogDto.BlogUpdateRequestDto(blogDto);
+      const error = new Error("errorr");
+      blogService.processUpdateBlog.mockRejectedValue(error);
 
-  //     it("Test case 2: Unable to update Blog", async () => {
-  //       // Arrange
-  //       const req = {
-  //         params: { uuid: "blog-uuid" },
-  //         body: { title: "fake_title", content: "fake_content" },
-  //         cookies: { "access-token": "fake-token" },
-  //       };
+      // Act
+      await handleUpdateBlogRequest(req, res, next);
 
-  //       const res = {
-  //         status: jest.fn().mockReturnThis(),
-  //         send: jest.fn(),
-  //       };
-
-  //       const next = jest.fn();
-
-  //       // Mock
-  //       userService.userFromAuthToken.mockResolvedValue(null);
-  //       const blogDto = new BlogDto.BlogUpdateRequestDto(
-  //         "fake_title",
-  //         "fake_content"
-  //       );
-  //       blogService.processUpdateBlog.mockResolvedValue(false);
-
-  //       // Act
-  //       await handleUpdateBlogRequest(req, res, next);
-
-  //       // Assert
-  //       expect(userService.userFromAuthToken).toHaveBeenCalledWith("fake-token");
-  //       expect(blogService.processUpdateBlog).toHaveBeenCalledWith(
-  //         null,
-  //         "blog-uuid",
-  //         blogDto
-  //       );
-  //       expect(next).toHaveBeenCalledWith(
-  //         new Error("Unable to update! please try again")
-  //       );
-  //     });
-  //   });
+      // Assert
+      expect(BlogDto.BlogUpdateRequestDto).toHaveBeenCalledWith(title, content);
+      expect(blogService.processUpdateBlog).toHaveBeenCalledWith(
+        userData,
+        blogUUID,
+        blogDto
+      );
+      expect(next).toHaveBeenCalledWith(error);
+    });
+  });
 });

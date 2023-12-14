@@ -92,8 +92,12 @@ describe("User Controllers", () => {
         user: {
           id: "12345",
         },
+        params: {
+          uuid: "12345",
+        },
       };
 
+      const userUUID = req.params.uuid;
       const userData = req.user;
       const expectedUser = usersDB[0];
 
@@ -110,7 +114,10 @@ describe("User Controllers", () => {
       await handleProfileDeletionRequest(req, res, next);
 
       // Assert
-      expect(userService.processUserDeleteById).toHaveBeenCalledWith(userData);
+      expect(userService.processUserDeleteById).toHaveBeenCalledWith(
+        userData,
+        userUUID
+      );
 
       expect(res.status).toHaveBeenLastCalledWith(200);
       expect(res.send).toHaveBeenCalledWith("Delete Success!");
@@ -124,8 +131,11 @@ describe("User Controllers", () => {
         user: {
           id: "12345",
         },
+        params: {
+          uuid: "12345",
+        },
       };
-
+      const userUUID = req.params.uuid;
       const userData = req.user;
 
       const res = {
@@ -142,7 +152,10 @@ describe("User Controllers", () => {
       await handleProfileDeletionRequest(req, res, next);
 
       // Assert
-      expect(userService.processUserDeleteById).toHaveBeenCalledWith(userData);
+      expect(userService.processUserDeleteById).toHaveBeenCalledWith(
+        userData,
+        userUUID
+      );
 
       expect(res.status).not.toHaveBeenCalledWith();
       expect(res.send).not.toHaveBeenCalledWith();
@@ -160,10 +173,13 @@ describe("User Controllers", () => {
           new_password: "12345",
         },
         user,
+        params: {
+          uuid: "12345",
+        },
       };
       const userDto = { old_password: "12354" };
       const userData = req.user;
-
+      const userUUID = req.params.uuid;
       const { old_password, new_password } = req.body;
 
       const res = {
@@ -187,7 +203,8 @@ describe("User Controllers", () => {
       expect(userService.processUserUpdate).toHaveBeenCalledWith(
         userData,
         userDto,
-        new_password
+        new_password,
+        userUUID
       );
 
       expect(res.status).toHaveBeenCalledWith(200);
@@ -204,7 +221,12 @@ describe("User Controllers", () => {
           new_password: "12345",
         },
         user,
+        params: {
+          uuid: "12345",
+        },
       };
+
+      const userUUID = req.params.uuid;
       const userDto = { old_password: "12354" };
       const userData = req.user;
 
@@ -232,7 +254,8 @@ describe("User Controllers", () => {
       expect(userService.processUserUpdate).toHaveBeenCalledWith(
         userData,
         userDto,
-        new_password
+        new_password,
+        userUUID
       );
 
       expect(res.status).not.toHaveBeenCalledWith();

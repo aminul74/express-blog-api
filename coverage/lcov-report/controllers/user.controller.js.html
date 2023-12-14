@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.92% </span>
+                <span class="strong">97.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>63/65</span>
+                <span class='fraction'>68/70</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.92% </span>
+                <span class="strong">97.14% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>63/65</span>
+                <span class='fraction'>68/70</span>
             </div>
         
             
@@ -128,7 +128,12 @@
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
 <a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -156,27 +161,32 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -219,8 +229,12 @@ const handleProfileGetRequest = async (req, res, next) =&gt; {
 &nbsp;
 const handleProfileDeletionRequest = async (req, res, next) =&gt; {
   try {
+    const userUUID = req.params.uuid;
     const userData = req.user;
-    const isDeletedUser = await userService.processUserDeleteById(userData);
+    const isDeletedUser = await userService.processUserDeleteById(
+      userData,
+      userUUID
+    );
 &nbsp;
     return res.status(200).send("Delete Success!");
   } catch (error) {
@@ -231,6 +245,7 @@ const handleProfileDeletionRequest = async (req, res, next) =&gt; {
 const handlePasswordUpdateRequest = async (req, res, next) =&gt; {
   try {
     const { old_password, new_password } = req.body;
+    const userUUID = req.params.uuid;
 &nbsp;
     const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 &nbsp;
@@ -239,9 +254,9 @@ const handlePasswordUpdateRequest = async (req, res, next) =&gt; {
     const isPasswordUpdate = await userService.processUserUpdate(
       userData,
       userDto,
-      new_password
+      new_password,
+      userUUID
     );
-&nbsp;
 &nbsp;
     // res.cookie("access-token", " ", {
     //   maxAge: -1,
@@ -265,7 +280,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-13T20:25:22.675Z
+                at 2023-12-14T14:33:27.961Z
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -24,8 +24,12 @@ const handleProfileGetRequest = async (req, res, next) => {
 
 const handleProfileDeletionRequest = async (req, res, next) => {
   try {
+    const userUUID = req.params.uuid;
     const userData = req.user;
-    const isDeletedUser = await userService.processUserDeleteById(userData);
+    const isDeletedUser = await userService.processUserDeleteById(
+      userData,
+      userUUID
+    );
 
     return res.status(200).send("Delete Success!");
   } catch (error) {
@@ -36,6 +40,7 @@ const handleProfileDeletionRequest = async (req, res, next) => {
 const handlePasswordUpdateRequest = async (req, res, next) => {
   try {
     const { old_password, new_password } = req.body;
+    const userUUID = req.params.uuid;
 
     const userDto = new UserDtoFilter.UserUpdateRequestDto(old_password);
 
@@ -44,9 +49,9 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
     const isPasswordUpdate = await userService.processUserUpdate(
       userData,
       userDto,
-      new_password
+      new_password,
+      userUUID
     );
-
 
     // res.cookie("access-token", " ", {
     //   maxAge: -1,

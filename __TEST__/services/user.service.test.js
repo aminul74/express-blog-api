@@ -51,12 +51,13 @@ describe("User Controllers", () => {
     it("Test Case 1: User Delete Success!", async () => {
       // Arrange
       const user = { id: "1234" };
+      const userUUID = "1234";
 
       // Mock
       userRepositories.deleteUserById.mockResolvedValue(true);
 
       // Act
-      const result = await processUserDeleteById(user);
+      const result = await processUserDeleteById(user, userUUID);
 
       // Assert
       expect(userRepositories.deleteUserById).toHaveBeenCalledWith(user.id);
@@ -66,21 +67,19 @@ describe("User Controllers", () => {
     it("Test Case 2: User Delete Failure!", async () => {
       // Arrange
       const user = { id: "1234" };
-
-      // Mock
-      userRepositories.deleteUserById.mockRejectedValue(
-        new Error("Please try again")
-      );
+      const userUUID = "5678";
 
       // Act and Assert
-      await expect(processUserDeleteById(user)).rejects.toThrow(Error);
-      expect(userRepositories.deleteUserById).toHaveBeenCalledWith(user.id);
+      await expect(processUserDeleteById(user, userUUID)).rejects.toThrow(
+        "Invalid user ID"
+      );
     });
   });
 
   describe("processUserUpdate", () => {
     it("Test Case 1: User Password Update Success!", async () => {
       // Arrange
+      const userUUID = "1234";
       const user = {
         id: "1234",
         password: "hashedOldPassword",
@@ -98,7 +97,12 @@ describe("User Controllers", () => {
       userRepositories.updatePasswordByUser.mockResolvedValue(true);
 
       // Act
-      const result = await processUserUpdate(user, updateUser, new_password);
+      const result = await processUserUpdate(
+        user,
+        updateUser,
+        new_password,
+        userUUID
+      );
 
       // Assert
       expect(bcrypt.genSalt).toHaveBeenCalled();
@@ -116,6 +120,7 @@ describe("User Controllers", () => {
 
     it("Test Case 2: User Old Password Wrong!", async () => {
       // Arrange
+      const userUUID = "1234";
       const user = { id: "1234", password: "hashedOldPassword" };
       const updateUser = { password: "old_Password" };
 
@@ -126,7 +131,7 @@ describe("User Controllers", () => {
 
       // Act and Assert
       await expect(
-        processUserUpdate(user, updateUser, "new_password")
+        processUserUpdate(user, updateUser, "new_password", userUUID)
       ).rejects.toThrow(error);
 
       expect(bcrypt.genSalt).toHaveBeenCalled();
@@ -138,6 +143,7 @@ describe("User Controllers", () => {
 
     it("Test Case 3: User Password Update Failure!", async () => {
       // Arrange
+      const userUUID = "1234";
       const user = { id: "1234", password: "hashedOldPassword" };
       const updateUser = { password: "old_Password" };
       const new_password = "new_Pass123";
@@ -151,7 +157,7 @@ describe("User Controllers", () => {
 
       // Act and Assert
       await expect(
-        processUserUpdate(user, updateUser, new_password)
+        processUserUpdate(user, updateUser, new_password, userUUID)
       ).rejects.toThrow(error);
       expect(bcrypt.compare).toHaveBeenCalledWith(
         updateUser.password,

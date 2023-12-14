@@ -45,8 +45,10 @@ const findBlogByAuthUser = async (id, blogUUID) => {
   });
 };
 
-const updateBlogById = async (blogUUID, title, content) => {
-  return await Blog.update({ title, content }, { where: { id: blogUUID } });
+const updateBlogById = async (isValidBlog, title, content) => {
+  return await isValidBlog.update(
+    { title, content },
+  );
 };
 
 module.exports = {

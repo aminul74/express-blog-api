@@ -10,12 +10,12 @@ router.get(
   controller.handleProfileGetRequest
 );
 router.delete(
-  "/delete",
+  "/:uuid",
   userValidate.authenticUser,
   controller.handleProfileDeletionRequest
 );
 router.put(
-  "/update-password",
+  "/:uuid",
   userValidate.authenticUser,
   validate.validateUpdate,
   controller.handlePasswordUpdateRequest

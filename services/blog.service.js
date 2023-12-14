@@ -23,33 +23,32 @@ const processSpecificUserBlog = async (user) => {
 };
 
 const processAllBlogs = async (page, size) => {
+  if (!Number.isNaN(page) && page > 0) {
+    page = page;
+  } else {
+    page = 1;
+  }
 
-    if (!Number.isNaN(page) && page > 0) {
-      page = page;
-    } else {
-      page = 1;
-    }
+  if (!Number.isNaN(size) && size > 0 && size < 5) {
+    size = size;
+  } else {
+    size = 5;
+  }
 
-    if (!Number.isNaN(size) && size > 0 && size < 5) {
-      size = size;
-    } else {
-      size = 5;
-    }
+  const numOfBlogs = await blogRepositories.countBlogs();
+  const pageLimit = Math.ceil(numOfBlogs / size);
 
-    const numOfBlogs = await blogRepositories.countBlogs();
-    const pageLimit = Math.ceil(numOfBlogs / size);
+  if (page >= pageLimit) {
+    page = 1;
+  }
 
-    if (page >= pageLimit) {
-      page = 1;
-    }
+  const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
 
-    const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
+  if (!numOfBlogs) {
+    throw new Error("No blogs found.");
+  }
 
-    if (!numOfBlogs) {
-      throw new Error("No blogs found.");
-    }
-
-    return getAllBlogs;
+  return getAllBlogs;
 };
 
 const processDeleteBlog = async (user, blogUUID) => {
@@ -80,13 +79,14 @@ const processUpdateBlog = async (user, blogUUID, blogDto) => {
     user.id,
     blogUUID
   );
+
   if (!isValidBlog) {
     const error = new Error("Blog not found");
     error.status = 404;
     throw error;
   }
   const processToUpdateBlog = await blogRepositories.updateBlogById(
-    blogUUID,
+    isValidBlog,
     title,
     content
   );

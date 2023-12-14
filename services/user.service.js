@@ -7,11 +7,15 @@ const userByTokenId = async (data) => {
   if (!user) {
     UnauthorizedError();
   }
-
   return user;
 };
 
-const processUserDeleteById = async (user) => {
+const processUserDeleteById = async (user, userUUID) => {
+  if (user.id !== userUUID) {
+    const error = new Error("Invalid user ID");
+    error.status = 400;
+    throw error;
+  }
   const processToDelete = await userRepositories.deleteUserById(user.id);
 
   if (!processToDelete) {
@@ -22,7 +26,13 @@ const processUserDeleteById = async (user) => {
   return processToDelete;
 };
 
-const processUserUpdate = async (user, updateUser, new_password) => {
+const processUserUpdate = async (user, updateUser, new_password, userUUID) => {
+  if (user.id !== userUUID) {
+    const error = new Error("Invalid user ID");
+    error.status = 400;
+    throw error;
+  }
+
   const salt = await bcrypt.genSalt();
 
   const isValidPassword = await bcrypt.compare(

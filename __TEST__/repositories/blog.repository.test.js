@@ -1,364 +1,381 @@
-// const Blog = require("../../models/blog.model");
-// const {
-//   createBlog,
-//   findBlogsById,
-//   countBlogs,
-//   findAllBlogs,
-//   findBlogById,
-//   deleteBlogById,
-//   findBlogByUUId,
-//   findBlogByAuthUser,
-//   updateBlogById,
-// } = require("../../repositories/blog.repository");
+const Blog = require("../../models/blog.model");
+const { blogsDB } = require("../testDB");
+const {
+  createBlog,
+  findBlogsById,
+  countBlogs,
+  findAllBlogs,
+  findBlogById,
+  deleteBlogById,
+  findBlogByUUId,
+  findBlogByAuthUser,
+  updateBlogById,
+} = require("../../repositories/blog.repository");
 
-// jest.mock("../../models/blog.model");
+jest.mock("../../models/blog.model");
 
-// describe("Blog Repositories", () => {
-//   describe("createBlog", () => {
-//     it("Test Case 1: Blog Create Success!", async () => {
-//       // Arrange
-//       const mockedBlog = {
-//         id: "blog_id",
-//         authorId: "fake_userId",
-//         title: "test 1",
-//         content: "hello World",
-//       };
-//       Blog.create.mockResolvedValue(mockedBlog);
+describe("Blog Repositories", () => {
+  describe("createBlog", () => {
+    it("Test Case 1: Blog Create Success!", async () => {
+      // Arrange
+      const mockedBlog = blogsDB[1];
+      Blog.create.mockResolvedValue(mockedBlog);
+      const id = "1234";
+      const title = "Test 2";
+      const content = "Hello world 2!";
 
-//       // Act
-//       const result = await createBlog("fake_userId", "test 1", "hello world");
+      // Act
+      const result = await createBlog(id, title, content);
 
-//       // Assert
-//       expect(Blog.create).toHaveBeenCalledWith({
-//         authorId: "fake_userId",
-//         title: "test 1",
-//         content: "hello world",
-//       });
-//       expect(result).toEqual(mockedBlog);
-//     });
+      // Assert
+      expect(Blog.create).toHaveBeenCalledWith({
+        authorId: id,
+        title: title,
+        content: content,
+      });
+      expect(result).toEqual(mockedBlog);
+    });
 
-//     it("Test Case 2: Blog Create Failure!", async () => {
-//       // Arrange
-//       const errorMessage = "Error creating blog";
-//       Blog.create.mockRejectedValue(new Error(errorMessage));
+    it("Test Case 2: Blog Create Failure!", async () => {
+      // Arrange
+      const id = "1234";
+      const title = "Test 2";
+      const content = "Hello world 2!";
+      //moc
+      const errorMessage = "Error creating blog";
+      Blog.create.mockRejectedValue(new Error(errorMessage));
 
-//       // Act & Assert
-//       await expect(
-//         createBlog("fake_userId", "Test 1", "Hello World")
-//       ).rejects.toThrow(errorMessage);
-//     });
-//   });
+      // Act & Assert
+      await expect(createBlog(id, title, content)).rejects.toThrow(
+        errorMessage
+      );
+    });
+  });
 
-//   describe("findBlogsById", () => {
-//     it("Test Case 1: Get BlogbyId Success!", async () => {
-//       //Arrange
-//       const authorId = "fake-id";
-//       const expectedBlogs = [
-//         { id: 1, title: "blog 1", content: "content 1" },
-//         { id: 2, title: "blog 2", content: "content 2" },
-//       ];
-//       //Moc
-//       Blog.findAll.mockResolvedValue(expectedBlogs);
-//       //Act
-//       const result = await findBlogsById(authorId);
-//       // console.log("XXX", result);
-//       //Assert
-//       expect(Blog.findAll).toHaveBeenCalledWith({
-//         where: { authorId },
-//         attributes: ["id", "title", "content"],
-//       });
-//       expect(result).toEqual(expectedBlogs);
-//     });
+  describe("findBlogsById", () => {
+    it("Test Case 1: Get BlogbyId Success!", async () => {
+      //Arrange
+      const id = "1234";
+      const authorId = "1234";
+      const expectedBlogs = [
+        {
+          id: 1,
+          title: "blog 1",
+          content: "content 1",
+          authorId: "author-123",
+        },
+      ];
+      //Moc
+      Blog.findAll.mockResolvedValue(expectedBlogs);
 
-//     it("Test Case 2: Get BlogbyId Failure!", async () => {
-//       //Arrange
-//       const authorId = false;
-//       //Act and Assert
-//       Blog.findAll.mockResolvedValue(null);
-//       const result = await findBlogsById(authorId);
+      //Act
+      const result = await findBlogsById(authorId);
 
-//       expect(Blog.findAll).toHaveBeenCalledWith({
-//         where: { authorId },
-//         attributes: ["id", "title", "content"],
-//       });
+      //Assert
+      expect(Blog.findAll).toHaveBeenCalledWith({
+        where: { authorId: id },
+        attributes: ["id", "title", "content", "authorId"],
+      });
+      expect(result).toEqual(expectedBlogs);
+    });
 
-//       expect(result).toBe(null);
-//     });
-//   });
+    it("Test Case 2: Get BlogbyId Failure!", async () => {
+      //Arrange
+      const authorId = false;
+      //Act and Assert
+      Blog.findAll.mockResolvedValue(null);
+      const result = await findBlogsById(authorId);
 
-//   describe("countBlogs", () => {
-//     it("Test Case 1: Blog Count Success!", async () => {
-//       //Arrange
-//       const expectedCount = 5;
+      expect(Blog.findAll).toHaveBeenCalledWith({
+        where: { authorId },
+        attributes: ["id", "title", "content", "authorId"],
+      });
 
-//       //Moc
-//       Blog.count.mockResolvedValue(expectedCount);
+      expect(result).toBe(null);
+    });
+  });
 
-//       //Assert
-//       const result = await countBlogs();
-//       expect(Blog.count).toHaveBeenCalled();
-//       expect(result).toEqual(expectedCount);
-//     });
-//   });
+  describe("countBlogs", () => {
+    it("Test Case 1: Blog Count Success!", async () => {
+      //Arrange
+      const expectedCount = 5;
 
-//   describe("findAllBlogs", () => {
-//     it("Test Case 1: Find allBlogs Success!", async () => {
-//       //Arrange
-//       const size = 10;
-//       const page = 0;
-//       const expectedBlogs = [
-//         { id: 1, title: "blog 1", content: "content 1" },
-//         { id: 2, title: "blog 2", content: "content 2" },
-//       ];
-//       //Moc
-//       Blog.findAll.mockResolvedValue(expectedBlogs);
+      //Moc
+      Blog.count.mockResolvedValue(expectedCount);
 
-//       //Act
-//       const result = await findAllBlogs(page, size);
-//       //Assert
-//       expect(Blog.findAll).toHaveBeenCalledWith({
-//         limit: size,
-//         offset: page * size,
-//       });
-//       expect(result).toBe(expectedBlogs);
-//     });
+      //Assert
+      const result = await countBlogs();
+      expect(Blog.count).toHaveBeenCalled();
+      expect(result).toEqual(expectedCount);
+    });
+  });
 
-//     it("Test Case 2: Find AllBlogs Failure", async () => {
-//       //Arrange
-//       const size = 10;
-//       const page = 0;
-//       //Moc
-//       Blog.findAll.mockResolvedValueOnce(false);
+  describe("findAllBlogs", () => {
+    it("Test Case 1: Find allBlogs Success!", async () => {
+      //Arrange
+      const size = 10;
+      const page = 0;
+      const expectedBlogs = [
+        {
+          id: 1,
+          title: "blog 1",
+          content: "content 1",
+          authorId: "author-123",
+        },
+      ];
+      //Moc
+      Blog.findAll.mockResolvedValue(expectedBlogs);
 
-//       //Act
-//       const result = await findAllBlogs(page, size);
-//       //Assert
-//       expect(Blog.findAll).toHaveBeenCalledWith({
-//         limit: size,
-//         offset: page * size,
-//       });
-//       expect(result).toEqual(false);
-//     });
-//   });
+      //Act
+      const result = await findAllBlogs(page, size);
+      //Assert
+      expect(Blog.findAll).toHaveBeenCalledWith({
+        attributes: ["id", "title", "content", "authorId"],
+        limit: size,
+        offset: page * size,
+      });
+      expect(result).toBe(expectedBlogs);
+    });
 
-//   describe("findBlogById", () => {
-//     it("Test Case 1: Find BlogById Success!", async () => {
-//       // Arrange
-//       const blogId = 1;
-//       const expectedBlog = {
-//         id: 1,
-//         title: "blog 1",
-//         content: "content 1",
-//       };
+    it("Test Case 2: Find AllBlogs Failure", async () => {
+      //Arrange
+      const size = 10;
+      const page = 0;
+      //Moc
+      Blog.findAll.mockResolvedValueOnce(false);
 
-//       // Mock
-//       Blog.findByPk.mockResolvedValue(expectedBlog);
+      //Act
+      const result = await findAllBlogs(page, size);
+      //Assert
+      expect(Blog.findAll).toHaveBeenCalledWith({
+        attributes: ["id", "title", "content", "authorId"],
+        limit: size,
+        offset: page * size,
+      });
+      expect(result).toEqual(false);
+    });
+  });
 
-//       // Act
-//       const result = await findBlogById(blogId);
+  describe("findBlogById", () => {
+    it("Test Case 1: Find BlogById Success!", async () => {
+      // Arrange
+      const blogId = 1;
+      const expectedBlog = {
+        id: 1,
+        title: "blog 1",
+        content: "content 1",
+      };
 
-//       // Assert
-//       expect(Blog.findByPk).toHaveBeenCalledWith(blogId);
-//       expect(result).toEqual(expectedBlog);
-//     });
+      // Mock
+      Blog.findByPk.mockResolvedValue(expectedBlog);
 
-//     it("Test Case 2: Find BlogById Failure!", async () => {
-//       // Arrange
-//       const invalidBlogId = "invalid-id";
+      // Act
+      const result = await findBlogById(blogId);
 
-//       // Mock
-//       Blog.findByPk.mockResolvedValue(null);
+      // Assert
+      expect(Blog.findByPk).toHaveBeenCalledWith(blogId);
+      expect(result).toEqual(expectedBlog);
+    });
 
-//       // Act and Assert
-//       const result = await findBlogById(invalidBlogId);
-//       expect(Blog.findByPk).toHaveBeenCalledWith(invalidBlogId);
-//       expect(result).toEqual(null);
-//     });
-//   });
+    it("Test Case 2: Find BlogById Failure!", async () => {
+      // Arrange
+      const invalidBlogId = "invalid-id";
 
-//   describe("deleteBlogById", () => {
-//     it("Test Case 1: Delete BlogById Success!", async () => {
-//       //Arrange
-//       const id = "id-123";
-//       const blogUUID = "uuid-123";
+      // Mock
+      Blog.findByPk.mockResolvedValue(null);
 
-//       //Moc
-//       Blog.destroy.mockResolvedValue(true);
+      // Act and Assert
+      const result = await findBlogById(invalidBlogId);
+      expect(Blog.findByPk).toHaveBeenCalledWith(invalidBlogId);
+      expect(result).toEqual(null);
+    });
+  });
 
-//       //Act
-//       const result = await deleteBlogById(id, blogUUID);
+  describe("deleteBlogById", () => {
+    it("Test Case 1: Delete BlogById Success!", async () => {
+      //Arrange
+      const id = "id-123";
+      const blogUUID = "uuid-123";
 
-//       //Assert
-//       expect(Blog.destroy).toHaveBeenCalledWith({
-//         where: { id: blogUUID, authorId: id },
-//       });
-//       expect(result).toEqual(true);
-//     });
+      //Moc
+      Blog.destroy.mockResolvedValue(true);
 
-//     it("Test Case 2: Delete BlogById Failure!", async () => {
-//       //Arrange
-//       const id = "id-123";
-//       const blogUUID = "uuid-123";
+      //Act
+      const result = await deleteBlogById(id, blogUUID);
 
-//       //Moc
-//       Blog.destroy.mockResolvedValue(false);
+      //Assert
+      expect(Blog.destroy).toHaveBeenCalledWith({
+        where: { id: blogUUID, authorId: id },
+      });
+      expect(result).toEqual(true);
+    });
 
-//       //Act
-//       const result = await deleteBlogById(id, blogUUID);
+    it("Test Case 2: Delete BlogById Failure!", async () => {
+      //Arrange
+      const id = "id-123";
+      const blogUUID = "uuid-123";
 
-//       //Assert
-//       expect(Blog.destroy).toHaveBeenCalledWith({
-//         where: { id: blogUUID, authorId: id },
-//       });
-//       expect(result).toEqual(false);
-//     });
-//   });
+      //Moc
+      Blog.destroy.mockResolvedValue(false);
 
-//   describe("findBlogByUUId", () => {
-//     it("Test Case 1: Find BlogByUUId Success!", async () => {
-//       // Arrange
-//       const blogUUID = "uuid-123";
-//       const expectedBlog = {
-//         id: "uuid-123",
-//         title: "Test 1",
-//         content: "Hello World",
-//         authorId: "auth-123",
-//       };
+      //Act
+      const result = await deleteBlogById(id, blogUUID);
 
-//       // Mock
-//       Blog.findOne.mockResolvedValue(expectedBlog);
+      //Assert
+      expect(Blog.destroy).toHaveBeenCalledWith({
+        where: { id: blogUUID, authorId: id },
+      });
+      expect(result).toEqual(false);
+    });
+  });
 
-//       // Act
-//       const result = await findBlogByUUId(blogUUID);
+  describe("findBlogByUUId", () => {
+    it("Test Case 1: Find BlogByUUId Success!", async () => {
+      // Arrange
+      const blogUUID = "uuid-123";
+      const expectedBlog = {
+        id: "uuid-123",
+        title: "Test 1",
+        content: "Hello World",
+        authorId: "auth-123",
+      };
 
-//       // Assert
-//       expect(Blog.findOne).toHaveBeenCalledWith({
-//         where: { id: blogUUID },
-//         attributes: ["id", "title", "content"],
-//       });
-//       expect(result).toEqual(expectedBlog);
-//     });
+      // Mock
+      Blog.findOne.mockResolvedValue(expectedBlog);
 
-//     it("Test Case 2: Find BlogByUUId Failure!", async () => {
-//       // Arrange
-//       const invalidUUID = "uuid-321";
+      // Act
+      const result = await findBlogByUUId(blogUUID);
 
-//       // Mock
-//       Blog.findOne.mockResolvedValue(null);
+      // Assert
+      expect(Blog.findOne).toHaveBeenCalledWith({
+        where: { id: blogUUID },
+        attributes: ["id", "title", "content", "authorId"],
+      });
+      expect(result).toEqual(expectedBlog);
+    });
 
-//       // Act
-//       const result = await findBlogByUUId(invalidUUID);
+    it("Test Case 2: Find BlogByUUId Failure!", async () => {
+      // Arrange
+      const invalidUUID = "uuid-321";
+      const blogUUID = "uuid-321";
+      // Mock
+      Blog.findOne.mockResolvedValue(null);
 
-//       // Assert
-//       expect(Blog.findOne).toHaveBeenCalledWith({
-//         where: { id: invalidUUID },
-//         attributes: ["id", "title", "content"],
-//       });
-//       expect(result).toBeNull();
-//     });
-//   });
+      // Act
+      const result = await findBlogByUUId(invalidUUID);
 
-//   describe("findBlogByAuthUser", () => {
-//     it("Test Case 1: Find BlogByAuthUser Success!", async () => {
-//       //Arrange
-//       const id = "id-123";
-//       const blogUUID = "uuid-123";
+      // Assert
+      expect(Blog.findOne).toHaveBeenCalledWith({
+        where: { id: blogUUID },
+        attributes: ["id", "title", "content", "authorId"],
+      });
+      expect(result).toBeNull();
+    });
+  });
 
-//       const expectedBlog = {
-//         id: "blog-id",
-//         title: "blog-title",
-//         content: "blog-content",
-//       };
-//       //Moc
-//       Blog.findOne.mockResolvedValue(expectedBlog);
+  describe("findBlogByAuthUser", () => {
+    it("Test Case 1: Find BlogByAuthUser Success!", async () => {
+      //Arrange
+      const id = "id-123";
+      const blogUUID = "uuid-123";
 
-//       //Act
-//       const result = await findBlogByAuthUser(id, blogUUID);
+      const expectedBlog = {
+        id: "blog-id",
+        title: "blog-title",
+        content: "blog-content",
+      };
+      //Moc
+      Blog.findOne.mockResolvedValue(expectedBlog);
 
-//       //Assert
-//       expect(Blog.findOne).toHaveBeenCalledWith({
-//         where: { id: blogUUID, authorId: id },
-//         attributes: ["id", "title", "content"],
-//       });
+      //Act
+      const result = await findBlogByAuthUser(id, blogUUID);
 
-//       expect(result).toEqual(expectedBlog);
-//     });
+      //Assert
+      expect(Blog.findOne).toHaveBeenCalledWith({
+        where: { id: blogUUID, authorId: id },
+        attributes: ["id", "title", "content", "authorId"],
+      });
 
-//     it("Test Case 2: Find BlogByAuthUser Failure!", async () => {
-//       //Arrange
-//       const invalidID = "id-123";
-//       const blogUUID = "uuid-123";
+      expect(result).toEqual(expectedBlog);
+    });
 
-//       const expectedBlog = {
-//         id: "blog-id",
-//         title: "blog-title",
-//         content: "blog-content",
-//       };
-//       //Moc
-//       Blog.findOne.mockResolvedValue(false);
+    it("Test Case 2: Find BlogByAuthUser Failure!", async () => {
+      //Arrange
+      const invalidID = "id-123";
+      const blogUUID = "uuid-123";
+      const id = "id-123";
+      const expectedBlog = {
+        id: "blog-id",
+        title: "blog-title",
+        content: "blog-content",
+      };
+      //Moc
+      Blog.findOne.mockResolvedValue(false);
 
-//       //Act
-//       const result = await findBlogByAuthUser(invalidID, blogUUID);
+      //Act
+      const result = await findBlogByAuthUser(invalidID, blogUUID);
 
-//       //Assert
-//       expect(Blog.findOne).toHaveBeenCalledWith({
-//         where: { id: blogUUID, authorId: invalidID },
-//         attributes: ["id", "title", "content"],
-//       });
+      //Assert
+      expect(Blog.findOne).toHaveBeenCalledWith({
+        where: { id: blogUUID, authorId: id },
+        attributes: ["id", "title", "content", "authorId"],
+      });
 
-//       expect(result).not.toEqual(expectedBlog);
-//     });
-//   });
+      expect(result).not.toEqual(expectedBlog);
+    });
+  });
 
-//   describe("updateBlogById", () => {
-//     it("Test Case 1: Blog Update Success!", async () => {
-//       //Arrange
-//       const blogUUID = "uuid-123";
-//       const title = "blog-title";
-//       const content = "blog-content";
+  describe("updateBlogById", () => {
+    it("Test Case 1: Blog Update Success!", async () => {
+      // Arrange
+      const isValidBlog = { update: jest.fn().mockResolvedValue(true) };
+      const title = "Title 1";
+      const content = "Content 1";
 
-//       const expectedBlog = {
-//         title: "blog-updateTitle",
-//         content: "blog-updateContent",
-//       };
-//       //Moc
-//       Blog.update.mockResolvedValue(expectedBlog);
+      // Act
+      const result = await updateBlogById(isValidBlog, title, content);
 
-//       //Act
-//       const result = await updateBlogById(blogUUID, title, content);
+      // Assert
+      expect(isValidBlog.update).toHaveBeenCalledWith({
+        title: "Title 1",
+        content: "Content 1",
+      });
+      expect(result).toEqual(true);
+    });
 
-//       //Assert
-//       expect(Blog.update).toHaveBeenCalledWith(
-//         { title, content },
-//         { where: { id: blogUUID } }
-//       );
+    it("Test Case 2: Blog Update Failure!", async () => {
+      // Arrange
+      const isValidBlog = { update: jest.fn().mockResolvedValue(false) };
+      const title = "Title 1";
+      const content = "Content 1";
 
-//       expect(result).toEqual(expectedBlog);
-//     });
+      // Act
+      const result = await updateBlogById(isValidBlog, title, content);
 
-//     it("Test Case 2: Blog Update Failure!", async () => {
-//       //Arrange
-//       const invalidUUID = "uuid-123";
-//       const title = "blog-title";
-//       const content = "blog-content";
+      // Assert
+      expect(isValidBlog.update).toHaveBeenCalledWith({
+        title: "Title 1",
+        content: "Content 1",
+      });
+      expect(result).toEqual(false);
+    });
 
-//       const expectedBlog = {
-//         title: "blog-updateTitle",
-//         content: "blog-updateContent",
-//       };
-//       //Moc
-//       Blog.update.mockResolvedValue(false);
+    it("Test Case 2: Blog Update Process Error!", async () => {
+      // Arrange
+      const isValidBlog = {
+        update: jest.fn().mockRejectedValue(new Error("Error")),
+      };
+      const title = "Title 1";
+      const content = "Content 1";
 
-//       //Act
-//       const result = await updateBlogById(invalidUUID, title, content);
-
-//       //Assert
-//       expect(Blog.update).toHaveBeenCalledWith(
-//         { title, content },
-//         { where: { id: invalidUUID } }
-//       );
-
-//       expect(result).not.toEqual(expectedBlog);
-//     });
-//   });
-// });
+      // Act and Assert
+      await expect(updateBlogById(isValidBlog, title, content)).rejects.toThrow(
+        "Error"
+      );
+      expect(isValidBlog.update).toHaveBeenCalledWith({
+        title: "Title 1",
+        content: "Content 1",
+      });
+    });
+  });
+});
