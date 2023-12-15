@@ -39,11 +39,10 @@ const processAllBlogs = async (page, size) => {
   const pageLimit = Math.ceil(numOfBlogs / size);
 
   if (page >= pageLimit) {
-    page = 1;
+    page = 0;
   }
 
   const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
-
   if (!numOfBlogs) {
     throw new Error("No blogs found.");
   }

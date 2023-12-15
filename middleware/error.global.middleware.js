@@ -1,13 +1,21 @@
-module.exports = (err, req, res, next) => {
+const { getContentBasedOnNegotiation } = require("../utils/responseType");
+
+module.exports = async (err, req, res, next) => {
   const errStatus = err.status || 500;
   let errMessage;
 
-  console.log("from global err:", err);
   if (errStatus == 500) {
     errMessage = "Internal Server Error !!";
   } else {
     errMessage = err.message || "Unknown Error";
   }
 
-  return res.status(errStatus).send(errMessage);
+  const negotiate = req.accepts(["json", "text", "xml", "html"]);
+  res.type(negotiate);
+
+  const response = await getContentBasedOnNegotiation(
+    [{ errMessage }],
+    negotiate
+  );
+  return res.status(errStatus).send(response);
 };

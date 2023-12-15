@@ -16,10 +16,6 @@ const handleCreateBlogRequest = async (req, res, next) => {
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
-    if (!negotiate) {
-      return res.status(406).send("Not Acceptable");
-    }
-
     res.type(negotiate);
     const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
 
@@ -60,21 +56,14 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
     const size = Number.parseInt(req.query.size);
 
     const isGetAllBlogs = await blogService.processAllBlogs(page, size);
+
     const jsonBlogs = isGetAllBlogs.map((blogs) => blogs.get({ plain: true }));
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
-    if (!negotiate) {
-      return res.status(406).send("Not Acceptable");
-    }
-
     res.type(negotiate);
     const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
-    if (!response) {
-      const error = new Error("No response");
-      error.status = 400;
-      throw error;
-    }
+
     return res.status(200).send(response);
   } catch (error) {
     next(error);
@@ -86,12 +75,16 @@ const handleBlogDeletionRequest = async (req, res, next) => {
     const blogUUID = req.params.uuid;
 
     const userData = req.user;
-    const isDeletedBlog = await blogService.processDeleteBlog(
-      userData,
-      blogUUID
+    await blogService.processDeleteBlog(userData, blogUUID);
+    const negotiate = req.accepts(["json", "text", "xml", "html"]);
+
+    res.type(negotiate);
+    const response = await getContentBasedOnNegotiation(
+      [{ Message: "Delete Success!" }],
+      negotiate
     );
 
-    return res.status(200).send("Delete success!");
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
@@ -106,10 +99,6 @@ const handleBlogByIdRequest = async (req, res, next) => {
     const jsonBlogs = getBlogById.map((blog) => blog.get({ plain: true }));
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
-    if (!negotiate) {
-      return res.status(406).send("Not Acceptable");
-    }
 
     res.type(negotiate);
     const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
@@ -136,10 +125,6 @@ const handleUpdateBlogRequest = async (req, res, next) => {
     const jsonBlogs = getBlogById.map((blog) => blog.get({ plain: true }));
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
-    if (!negotiate) {
-      return res.status(406).send("Not Acceptable");
-    }
 
     res.type(negotiate);
     const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);

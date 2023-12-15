@@ -9,11 +9,8 @@ const handleProfileGetRequest = async (req, res, next) => {
     const userProfile = [user];
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-    if (!negotiate) {
-      return res.status(406).send("Not Acceptable");
-    }
-
     res.type(negotiate);
+
     const response = await getContentBasedOnNegotiation(userProfile, negotiate);
 
     return res.status(200).send(response);
@@ -26,12 +23,16 @@ const handleProfileDeletionRequest = async (req, res, next) => {
   try {
     const userUUID = req.params.uuid;
     const userData = req.user;
-    const isDeletedUser = await userService.processUserDeleteById(
-      userData,
-      userUUID
-    );
+    await userService.processUserDeleteById(userData, userUUID);
 
-    return res.status(200).send("Delete Success!");
+    const negotiate = req.accepts(["json", "text", "xml", "html"]);
+
+    res.type(negotiate);
+    const response = await getContentBasedOnNegotiation(
+      [{ Message: "Delete Success!" }],
+      negotiate
+    );
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
@@ -46,18 +47,22 @@ const handlePasswordUpdateRequest = async (req, res, next) => {
 
     const userData = req.user;
 
-    const isPasswordUpdate = await userService.processUserUpdate(
+    await userService.processUserUpdate(
       userData,
       userDto,
       new_password,
       userUUID
     );
 
-    // res.cookie("access-token", " ", {
-    //   maxAge: -1,
-    // });
+    const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
-    return res.status(200).send("Password update success!");
+    res.type(negotiate);
+    const response = await getContentBasedOnNegotiation(
+      [{ Message: "Password update success!" }],
+      negotiate
+    );
+
+    return res.status(200).send(response);
   } catch (error) {
     next(error);
   }

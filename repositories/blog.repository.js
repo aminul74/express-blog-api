@@ -46,9 +46,7 @@ const findBlogByAuthUser = async (id, blogUUID) => {
 };
 
 const updateBlogById = async (isValidBlog, title, content) => {
-  return await isValidBlog.update(
-    { title, content },
-  );
+  return await isValidBlog.update({ title, content });
 };
 
 module.exports = {
