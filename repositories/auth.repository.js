@@ -7,9 +7,6 @@ const findEmailByUserEmail = (email) => {
 const getUserByUsername = (username) => {
   return User.findOne({ where: { username } });
 };
-// const loginUser = (username) => {
-//   return getUserByUsername(username);
-// };
 
 const createUser = async (username, email, hashPassword) => {
   return await User.create({ username, email, password: hashPassword });
@@ -18,6 +15,5 @@ const createUser = async (username, email, hashPassword) => {
 module.exports = {
   findEmailByUserEmail,
   getUserByUsername,
-  // loginUser,
   createUser,
 };

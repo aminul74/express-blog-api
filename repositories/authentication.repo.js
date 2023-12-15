@@ -88,26 +88,6 @@ const updateProfileFromRepo = async (userDtoBody) => {
     );
     console.log("2nd", updateProfile);
     return updateProfile;
-    // if (!newPassword) {
-    //   const error = new Error("New password is required");
-    //   error.status = 400;
-    //   throw error;
-    // }
-
-    // const updateProfile = await User.update(
-    //   { password: newPassword },
-    //   {
-    //     where: { username },
-    //   }
-    // );
-
-    // if (updateProfile[0] === 0) {
-    //   const error = new Error("User not found");
-    //   error.status = 404;
-    //   throw error;
-    // }
-
-    // return updateProfile;
   } catch (error) {
     throw error;
   }

@@ -39,7 +39,6 @@ const handleLoginRequest = async (req, res, next) => {
     const userDto = new UserDtoFilter.UserLoginRequestDto(username, password);
 
     const isMatchedUsernamePassword = await authService.processUserLogin(
-      //CheckUsernameAndPassword
       userDto.username,
       userDto.password
     );
@@ -52,7 +51,6 @@ const handleLoginRequest = async (req, res, next) => {
 
     const userLoginToken = createToken(user.id);
 
-    // res.cookie("access-token", userLoginToken, { maxAge: 30 * 24 * 60 * 60 });
     const tokenResponse = { token: userLoginToken };
     const token = [tokenResponse];
     const negotiate = req.accepts(["json", "text", "xml", "html"]);

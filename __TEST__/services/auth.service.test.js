@@ -1,7 +1,7 @@
 const authRepositories = require("../../repositories/auth.repository");
 const bcrypt = require("bcrypt");
 const { decodeToken } = require("../../utils/JWT");
-const { UnauthorizedError } = require("../../utils/errors");
+// const { UnauthorizedError } = require("../../utils/errors");
 
 const {
   processUserRegistration,
@@ -12,7 +12,7 @@ const {
 jest.mock("../../repositories/auth.repository");
 jest.mock("bcrypt");
 jest.mock("../../utils/JWT");
-jest.mock("../../utils/errors");
+// jest.mock("../../utils/errors");
 
 describe("Auth Controllers", () => {
   describe("processUserRegistration", () => {

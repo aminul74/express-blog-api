@@ -12,7 +12,7 @@ const {
 jest.mock("../../repositories/user.repository");
 jest.mock("bcrypt");
 jest.mock("../../utils/JWT");
-jest.mock("../../utils/errors");
+// jest.mock("../../utils/errors");
 
 describe("User Controllers", () => {
   describe("userByTokenId", () => {
@@ -32,18 +32,16 @@ describe("User Controllers", () => {
     });
 
     it("Test Case 2: Get User by Token Failure!", async () => {
-      //Arrange
+      // Arrange
       const user = usersDB[1];
 
-      //Moc
-      userRepositories.getUserById.mockResolvedValue(false);
+      // Mock
+      const error = new Error("Unauthorized!");
+      userRepositories.getUserById.mockRejectedValue(error);
 
-      //Act
-      const result = await userByTokenId(user);
-
-      //Assert
+      // Act and Assert
+      await expect(userByTokenId(user)).rejects.toThrow("Unauthorized!");
       expect(userRepositories.getUserById).toHaveBeenCalledWith(user.id);
-      expect(result).toEqual(false);
     });
   });
 

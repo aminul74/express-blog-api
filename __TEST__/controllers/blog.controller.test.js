@@ -321,21 +321,22 @@ describe("Blog Controllers", () => {
           email: "aminul@gmail.com",
           password: "a1234b4",
         },
+        accepts: jest.fn().mockReturnValue("json"),
       };
 
       const res = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn(),
+        type: jest.fn(),
       };
-
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
       const blogUUID = req.params.uuid;
       const userData = req.user;
-
       const next = jest.fn();
       //Moc
 
       blogService.processDeleteBlog.mockResolvedValue(true);
-
+      getContentBasedOnNegotiation.mockResolvedValue(true);
       // Act
       await handleBlogDeletionRequest(req, res, next);
 
@@ -344,8 +345,13 @@ describe("Blog Controllers", () => {
         userData,
         blogUUID
       );
+
+      expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
+        [{ Message: "Delete Success!" }],
+        negotiate
+      );
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.send).toHaveBeenCalledWith("Delete success!");
+      expect(res.send).toHaveBeenCalledWith(true);
     });
 
     it("Test case 2: Unable to delete blog", async () => {

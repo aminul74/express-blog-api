@@ -49,26 +49,10 @@ const getContentBasedOnNegotiation = async (data, format, next) => {
         throw new Error("Not Acceptable");
     }
   } catch (error) {
-    console.error("Error in getContentBasedOnNegotiation:", error);
+    console.error("Error:", error);
     throw error;
   }
 };
-
-
-
-// const negotiate = (req, res, next) => {
-//   const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
-//   if (!negotiate) {
-//     return res.status(406).send("Not Acceptable");
-//   }
-
-//   res.type(negotiate);
-//   req.negotiate = negotiate;
-
-//   next();
-// };
-
 
 module.exports = {
   getContentBasedOnNegotiation,

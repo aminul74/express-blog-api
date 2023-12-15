@@ -1,11 +1,10 @@
 const userRepositories = require("../repositories/user.repository");
 const bcrypt = require("bcrypt");
-const { UnauthorizedError } = require("../utils/errors");
 
 const userByTokenId = async (data) => {
   const user = await userRepositories.getUserById(data.id);
   if (!user) {
-    const error = new Error("Unauthorized!!");
+    const error = new Error("Unauthorized!");
     error.status = 400;
     throw error;
   }

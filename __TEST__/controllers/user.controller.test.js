@@ -63,25 +63,36 @@ describe("User Controllers", () => {
     });
 
     it("Test Case 2: Profile Get Request Failure!", async () => {
-      // Arrange
+      //Arrange
+
       const req = {
-        user: { toJSON: jest.fn() },
-        accepts: jest.fn().mockReturnValue(null),
+        user: {
+          id: "12345",
+          username: "aminul123",
+          email: "aminul@gamil.com",
+          password: "pass-123",
+        },
+        accepts: jest.fn(),
       };
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
       const res = {
-        status: jest.fn().mockReturnThis(),
+        status: jest.fn().mockReturnThis(negotiate),
         send: jest.fn(),
+        type: jest.fn(),
       };
 
       const next = jest.fn();
-      // Act
+
+      //Mock
+      const error = new Error("errorr");
+      getContentBasedOnNegotiation.mockRejectedValue(error);
+
+      //Act
       await handleProfileGetRequest(req, res, next);
 
-      // Assert
-      expect(req.user.toJSON).toHaveBeenCalled();
-      expect(req.accepts).toHaveBeenCalledWith(["json", "text", "xml", "html"]);
-      expect(res.status).toHaveBeenCalledWith(406);
-      expect(res.send).toHaveBeenCalledWith("Not Acceptable");
+      //Assert
+      expect(res.status).not.toHaveBeenCalledWith();
+      expect(res.send).not.toHaveBeenCalledWith();
     });
   });
 
@@ -95,6 +106,7 @@ describe("User Controllers", () => {
         params: {
           uuid: "12345",
         },
+        accepts: jest.fn(),
       };
 
       const userUUID = req.params.uuid;
@@ -104,12 +116,13 @@ describe("User Controllers", () => {
       const res = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn(),
+        type: jest.fn(),
       };
-
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
       const next = jest.fn();
 
       userService.processUserDeleteById.mockResolvedValue(expectedUser);
-
+      getContentBasedOnNegotiation.mockResolvedValue(true);
       // Act
       await handleProfileDeletionRequest(req, res, next);
 
@@ -119,9 +132,13 @@ describe("User Controllers", () => {
         userUUID
       );
 
-      expect(res.status).toHaveBeenLastCalledWith(200);
-      expect(res.send).toHaveBeenCalledWith("Delete Success!");
+      expect(getContentBasedOnNegotiation).toHaveBeenCalledWith(
+        [{ Message: "Delete Success!" }],
+        negotiate
+      );
 
+      expect(res.status).toHaveBeenLastCalledWith(200);
+      expect(res.send).toHaveBeenCalledTimes(1);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -176,23 +193,26 @@ describe("User Controllers", () => {
         params: {
           uuid: "12345",
         },
+        accepts: jest.fn(),
       };
+
       const userDto = { old_password: "12354" };
       const userData = req.user;
       const userUUID = req.params.uuid;
       const { old_password, new_password } = req.body;
-
+      const negotiate = req.accepts(["json", "text", "xml", "html"]);
       const res = {
         status: jest.fn().mockReturnThis(),
         send: jest.fn(),
         cookie: jest.fn(),
+        type: jest.fn(),
       };
 
       const next = jest.fn();
       //Moc
       UserDtoFilter.UserUpdateRequestDto.mockReturnValue(userDto);
       userService.processUserUpdate.mockResolvedValue(true);
-
+      getContentBasedOnNegotiation.mockResolvedValue(true);
       //Act
       await handlePasswordUpdateRequest(req, res, next);
 
@@ -206,9 +226,12 @@ describe("User Controllers", () => {
         new_password,
         userUUID
       );
-
+      expect(getContentBasedOnNegotiation).toHaveBeenLastCalledWith(
+        [{ Message: "Password update success!" }],
+        negotiate
+      );
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.send).toHaveBeenCalledWith("Password update success!");
+      expect(res.send).toHaveBeenCalledTimes(1);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -257,7 +280,6 @@ describe("User Controllers", () => {
         new_password,
         userUUID
       );
-
       expect(res.status).not.toHaveBeenCalledWith();
       expect(res.send).not.toHaveBeenCalledWith();
       expect(next).toHaveBeenCalledWith(updateError);

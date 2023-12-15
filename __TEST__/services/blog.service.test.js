@@ -118,7 +118,7 @@ describe("Blog Services", () => {
   describe("processAllBlogs", () => {
     it("Test Case 1: Get All Blogs Success!", async () => {
       // Arrange
-      const page = 1;
+      const page = 0;
       const size = 5;
 
       const numOfBlogs = 5;
