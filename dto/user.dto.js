@@ -1,11 +1,5 @@
 class UserRegRequestDto {
-  username;
-  email;
-  password;
-
-  constructor(body) {
-    const { username, email, password } = body;
-
+  constructor(username, email, password) {
     this.username = username;
     this.email = email;
     this.password = password;
@@ -16,12 +10,20 @@ class UserLoginRequestDto {
   username;
   password;
 
-  constructor(body) {
-    const { username, password } = body;
-
+  constructor(username, password) {
     this.username = username;
     this.password = password;
   }
 }
 
-module.exports = { UserRegRequestDto, UserLoginRequestDto };
+class UserUpdateRequestDto {
+  constructor(old_password) {
+    this.password = old_password;
+  }
+}
+
+module.exports = {
+  UserRegRequestDto,
+  UserLoginRequestDto,
+  UserUpdateRequestDto,
+};

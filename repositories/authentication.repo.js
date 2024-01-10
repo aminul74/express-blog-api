@@ -1,61 +1,105 @@
 const User = require("../models/user.model");
-const bcrypt = require("bcrypt");
 
-const signUpRepo = async (username, email, password) => {
+const getUserById = async(data) => {
+  const {id} = data;
+  if (!id) {
+    throw new Error("Invalid data: 'id' is missing or undefined");
+  }
+  return await User.findOne({ where: { id: id} });
+};
+
+const getUserByUsername = (username) => {
+  return User.findOne({ where: { username } });
+};
+
+const findEmailByUserEmail = async(email) =>{
+  return await User.findOne({where: { email : email }});
+}
+
+const createUser = async(username, email, hashPassword) => {
+  return await User.create({username,email, password:hashPassword});
+};
+
+const loginUser = async(username) =>{
+  const res = await getUserByUsername(username);
+  return res;
+}
+
+
+const getProfileFromRepo = async (user) => {
   try {
-    const singleUser = await User.findOne({ where: { email: email } });
+    const username = user.tokenParam;
+    const userProfile = await User.findOne({
+      where: { username },
+      attributes: ["id", "username", "email"],
+    });
 
-    if (singleUser) {
-      const error = new Error("User already exist !");
-      error.status = 409;
+    if (!userProfile) {
+      const error = new Error("User not found");
+      error.status = 404;
       throw error;
     }
 
-    const salt = await bcrypt.genSalt();
-    const hashPassword = await bcrypt.hash(password, salt);
-
-    const newUser = await User.create({
-      username,
-      email,
-      password: hashPassword,
-    });
-
-    return newUser;
+    return userProfile;
   } catch (error) {
     throw error;
   }
 };
 
-const logInRepo = async (username, password) => {
+const deleteProfileFromRepo = async (user) => {
   try {
-    const findUserWithUserName = await User.findOne({
-      where: { username: username },
+    const username = user.tokenParam;
+    const deleteProfile = await User.destroy({
+      where: { username },
     });
 
-    if (!findUserWithUserName) {
-      const error = new Error("Username not found");
+    if (!deleteProfile) {
+      const error = new Error("User not found");
       error.status = 404;
       throw error;
     }
 
-    const isValid = await bcrypt.compare(
-      password,
-      findUserWithUserName.password
-    );
+    return deleteProfile;
+  } catch (error) {
+    throw error;
+  }
+};
 
-    if (!isValid) {
-      const error = new Error("Wrong password");
-      error.status = 401;
+const updateProfileFromRepo = async (userDtoBody) => {
+  try {
+    const username = userDtoBody.username;
+    const foundUser = await User.findOne({
+      where: { username: userDtoBody.username },
+    });
+    if (!foundUser) {
+      const error = new Error("User not found");
+      error.status = 404;
       throw error;
     }
 
-    return isValid;
+    const newPassword = foundUser.password;
+
+    console.log("1st", newPassword);
+    const updateProfile = await User.update(
+      { password: newPassword },
+      {
+        where: { username: userDtoBody.username },
+      }
+    );
+    console.log("2nd", updateProfile);
+    return updateProfile;
   } catch (error) {
     throw error;
   }
 };
 
 module.exports = {
-  signUpRepo,
-  logInRepo,
+  createUser,
+  findEmailByUserEmail,
+  loginUser,
+  getUserByUsername,
+  getUserById,
+  getProfileFromRepo,
+  deleteProfileFromRepo,
+  updateProfileFromRepo,
 };
