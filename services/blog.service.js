@@ -35,20 +35,50 @@ const processAllBlogs = async (page, size) => {
     size = 6;
   }
 
-  const numOfBlogs = await blogRepositories.countBlogs();
+  const result = await blogRepositories.findAllBlogs(page - 1, size);
+
+  const numOfBlogs = result.totalBlogs;
+
   const pageLimit = Math.ceil(numOfBlogs / size);
 
   if (page >= pageLimit) {
     page = 0;
   }
 
-  const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
   if (!numOfBlogs) {
     throw new Error("No blogs found.");
   }
 
-  return getAllBlogs;
+  return result;
 };
+
+// const processAllBlogs = async (page, size) => {
+//   if (!Number.isNaN(page) && page > 0) {
+//     page = page;
+//   } else {
+//     page = 1;
+//   }
+
+//   if (!Number.isNaN(size) && size > 0 && size < 5) {
+//     size = size;
+//   } else {
+//     size = 6;
+//   }
+
+//   const numOfBlogs = await blogRepositories.countBlogs();
+//   const pageLimit = Math.ceil(numOfBlogs / size);
+
+//   if (page >= pageLimit) {
+//     page = 0;
+//   }
+
+//   const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
+//   if (!numOfBlogs) {
+//     throw new Error("No blogs found.");
+//   }
+
+//   return getAllBlogs;
+// };
 
 const processDeleteBlog = async (user, blogUUID) => {
   const deletedBlog = await blogRepositories.deleteBlogById(user.id, blogUUID);

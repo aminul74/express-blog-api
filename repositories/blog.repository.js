@@ -15,13 +15,27 @@ const countBlogs = async () => {
   const noOfBlogs = await Blog.count();
   return noOfBlogs;
 };
+
 const findAllBlogs = async (page, size) => {
-  return await Blog.findAll({
-    attributes: ["id", "title", "content", "authorId"],
+  const result = await Blog.findAndCountAll({
     limit: size,
     offset: page * size,
+    order: [["createdAt", "DESC"]],
   });
+
+  return {
+    blogs: result.rows,
+    totalBlogs: result.count,
+  };
 };
+
+// const findAllBlogs = async (page, size) => {
+//   return await Blog.findAll({
+//     attributes: ["id", "title", "content", "authorId"],
+//     limit: size,
+//     offset: page * size,
+//   });
+// };
 
 const findBlogById = async (id) => {
   return await Blog.findByPk(id);

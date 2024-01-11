@@ -54,21 +54,47 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
   try {
     const page = Number.parseInt(req.query.page);
     const size = Number.parseInt(req.query.size);
+    console.log(req.query);
+    const result = await blogService.processAllBlogs(page, size);
 
-    const isGetAllBlogs = await blogService.processAllBlogs(page, size);
+    const jsonBlogs = result.blogs.map((blog) => {
+      const { ...blogData } = blog.get({ plain: true });
+      return blogData;
+    });
 
-    const jsonBlogs = isGetAllBlogs.map((blogs) => blogs.get({ plain: true }));
+    const totalCount = result.totalBlogs;
 
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
 
-    res.type(negotiate);
-    const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
+    const arrayResult = [jsonBlogs, totalCount];
+
+    const response = await getContentBasedOnNegotiation(arrayResult, negotiate);
 
     return res.status(200).send(response);
   } catch (error) {
     next(error);
   }
 };
+
+// const handleGetAllBlogsRequest = async (req, res, next) => {
+//   try {
+//     const page = Number.parseInt(req.query.page);
+//     const size = Number.parseInt(req.query.size);
+
+//     const isGetAllBlogs = await blogService.processAllBlogs(page, size);
+
+//     const jsonBlogs = isGetAllBlogs.map((blogs) => blogs.get({ plain: true }));
+
+//     const negotiate = req.accepts(["json", "text", "xml", "html"]);
+
+//     res.type(negotiate);
+//     const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
+
+//     return res.status(200).send(response);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const handleBlogDeletionRequest = async (req, res, next) => {
   try {
