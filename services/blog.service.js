@@ -32,7 +32,7 @@ const processAllBlogs = async (page, size) => {
   if (!Number.isNaN(size) && size > 0 && size < 5) {
     size = size;
   } else {
-    size = 5;
+    size = 6;
   }
 
   const numOfBlogs = await blogRepositories.countBlogs();
@@ -80,7 +80,7 @@ const processUpdateBlog = async (user, blogUUID, blogDto) => {
   );
 
   if (!isValidBlog) {
-    const error = new Error("Blog not found");
+    const error = new Error("Unauthorized to Update");
     error.status = 404;
     throw error;
   }
