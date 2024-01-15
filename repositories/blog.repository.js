@@ -1,5 +1,5 @@
 const Blog = require("../models/blog.model");
-
+const User = require("../models/user.model");
 const createBlog = async (id, title, content) => {
   return await Blog.create({ authorId: id, title, content });
 };
@@ -21,6 +21,12 @@ const findAllBlogs = async (page, size) => {
     limit: size,
     offset: page * size,
     order: [["createdAt", "DESC"]],
+    include: [
+      {
+        model: User,
+        attributes: ["username"],
+      },
+    ],
   });
 
   return {
