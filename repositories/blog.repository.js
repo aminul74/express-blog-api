@@ -54,7 +54,13 @@ const deleteBlogById = async (id, blogUUID) => {
 const findBlogByUUId = async (blogUUID) => {
   return await Blog.findOne({
     where: { id: blogUUID },
-    attributes: ["id", "title", "content", "authorId"],
+    // attributes: ["id", "title", "content", "authorId"],
+    include: [
+      {
+        model: User,
+        attributes: ["username"],
+      },
+    ],
   });
 };
 
