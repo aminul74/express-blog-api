@@ -20,7 +20,7 @@ const handleUserRegistration = async (req, res, next) => {
     const tokenResponse = { token: userRegistrationToken };
     const token = [tokenResponse];
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
- 
+
     if (!negotiate) {
       return res.status(406).send("Not Acceptable");
     }
@@ -44,7 +44,7 @@ const handleLoginRequest = async (req, res, next) => {
     );
 
     if (!isMatchedUsernamePassword) {
-      throw new Error("error");
+      throw new Error("Please Try Again");
     }
 
     const user = await authService.getUserByUsername(userDto.username);
@@ -61,10 +61,11 @@ const handleLoginRequest = async (req, res, next) => {
 
     res.type(negotiate);
     const response = await getContentBasedOnNegotiation(token, negotiate);
- 
+
     res.status(200);
     res.send(response);
   } catch (error) {
+    console.log("next error:", error);
     next(error);
   }
 };

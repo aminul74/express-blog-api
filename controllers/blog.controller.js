@@ -54,7 +54,7 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
   try {
     const page = Number.parseInt(req.query.page);
     const size = Number.parseInt(req.query.size);
-    console.log(req.query);
+    
     const result = await blogService.processAllBlogs(page, size);
 
     const jsonBlogs = result.blogs.map((blog) => {

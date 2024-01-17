@@ -27,14 +27,14 @@ const processUserLogin = async (username, password) => {
 
   if (!validUser) {
     const error = new Error("Username not found");
-    error.status = 404;
+    error.status = 400;
     throw error;
   }
   const isValid = await bcrypt.compare(password, validUser.password);
 
   if (!isValid) {
     const error = new Error("Wrong password");
-    error.status = 401;
+    error.status = 400;
     throw error;
   }
 
