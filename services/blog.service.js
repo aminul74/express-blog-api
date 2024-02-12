@@ -13,37 +13,29 @@ const processNewBlog = async (user, blogDto) => {
   return proccessBlog;
 };
 
-const processSpecificUserBlog = async (user) => {
-  const processToFindAllBlog = await blogRepositories.findBlogsById(user.id);
+const processSpecificUserBlog = async (page, size, user) => {
+  page = !Number.isNaN(page) && page > 0 ? page - 1 : 0;
+  size = !Number.isNaN(size) && size > 0 && size < 5 ? size : 6;
 
-  if (!processToFindAllBlog) {
-    throw new Error("Please try again");
+  const result = await blogRepositories.findBlogsById(page, size, user.id);
+  const numOfBlogs = result.count;
+  const pageLimit = Math.ceil(numOfBlogs / size);
+  page = (page >= pageLimit) ? 0 : page;
+
+  if (!numOfBlogs) {
+    throw new Error("No blogs found.");
   }
-  return processToFindAllBlog;
+  return result;
 };
 
 const processAllBlogs = async (page, size) => {
-  if (!Number.isNaN(page) && page > 0) {
-    page = page;
-  } else {
-    page = 1;
-  }
-
-  if (!Number.isNaN(size) && size > 0 && size < 5) {
-    size = size;
-  } else {
-    size = 6;
-  }
-
-  const result = await blogRepositories.findAllBlogs(page - 1, size);
+  page = !Number.isNaN(page) && page > 0 ? page - 1 : 0;
+  size = !Number.isNaN(size) && size > 0 && size < 5 ? size : 6;
+  const result = await blogRepositories.findAllBlogs(page, size);
 
   const numOfBlogs = result.totalBlogs;
-
   const pageLimit = Math.ceil(numOfBlogs / size);
-
-  if (page >= pageLimit) {
-    page = 0;
-  }
+  page = page >= pageLimit ? 0 : page;
 
   if (!numOfBlogs) {
     throw new Error("No blogs found.");
@@ -51,34 +43,6 @@ const processAllBlogs = async (page, size) => {
 
   return result;
 };
-
-// const processAllBlogs = async (page, size) => {
-//   if (!Number.isNaN(page) && page > 0) {
-//     page = page;
-//   } else {
-//     page = 1;
-//   }
-
-//   if (!Number.isNaN(size) && size > 0 && size < 5) {
-//     size = size;
-//   } else {
-//     size = 6;
-//   }
-
-//   const numOfBlogs = await blogRepositories.countBlogs();
-//   const pageLimit = Math.ceil(numOfBlogs / size);
-
-//   if (page >= pageLimit) {
-//     page = 0;
-//   }
-
-//   const getAllBlogs = await blogRepositories.findAllBlogs(page, size);
-//   if (!numOfBlogs) {
-//     throw new Error("No blogs found.");
-//   }
-
-//   return getAllBlogs;
-// };
 
 const processDeleteBlog = async (user, blogUUID) => {
   const deletedBlog = await blogRepositories.deleteBlogById(user.id, blogUUID);

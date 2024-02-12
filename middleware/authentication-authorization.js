@@ -1,6 +1,6 @@
 const jwt = require("../utils/JWT");
 const userService = require("../services/user.service");
-const {} = require("../utils//responseType");
+
 const authenticUser = async (req, res, next) => {
   const authorizationHeader = req.headers["authorization"];
   if (!authorizationHeader) {

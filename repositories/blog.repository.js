@@ -1,20 +1,24 @@
 const Blog = require("../models/blog.model");
 const User = require("../models/user.model");
+
 const createBlog = async (id, title, content) => {
   return await Blog.create({ authorId: id, title, content });
 };
 
-const findBlogsById = async (id) => {
-  return await Blog.findAll({
+const findBlogsById = async (page, size, id) => {
+  const blogs = await Blog.findAndCountAll({
+    limit: size,
+    offset: page * size,
     where: { authorId: id },
-    attributes: ["id", "title", "content", "authorId"],
+    order: [["createdAt", "DESC"]],
   });
+  return { blogs: blogs.rows, count: blogs.count };
 };
 
-const countBlogs = async () => {
-  const noOfBlogs = await Blog.count();
-  return noOfBlogs;
-};
+// const countBlogs = async () => {
+//   const noOfBlogs = await Blog.count();
+//   return noOfBlogs;
+// };
 
 const findAllBlogs = async (page, size) => {
   const result = await Blog.findAndCountAll({
@@ -35,14 +39,6 @@ const findAllBlogs = async (page, size) => {
   };
 };
 
-// const findAllBlogs = async (page, size) => {
-//   return await Blog.findAll({
-//     attributes: ["id", "title", "content", "authorId"],
-//     limit: size,
-//     offset: page * size,
-//   });
-// };
-
 const findBlogById = async (id) => {
   return await Blog.findByPk(id);
 };
@@ -54,7 +50,6 @@ const deleteBlogById = async (id, blogUUID) => {
 const findBlogByUUId = async (blogUUID) => {
   return await Blog.findOne({
     where: { id: blogUUID },
-    // attributes: ["id", "title", "content", "authorId"],
     include: [
       {
         model: User,
@@ -84,5 +79,5 @@ module.exports = {
   findBlogByUUId,
   updateBlogById,
   findBlogByAuthUser,
-  countBlogs,
+  // countBlogs,
 };

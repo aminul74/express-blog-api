@@ -27,23 +27,28 @@ const handleCreateBlogRequest = async (req, res, next) => {
 
 const handleGetUserSelfBlogRequest = async (req, res, next) => {
   try {
+    const page = Number.parseInt(req.query.page);
+    const size = Number.parseInt(req.query.size);
+    console.log("Page Backend :", page, "Size Backend :", size);
     const userData = req.user;
 
-    const isGetUserAllBlogs = await blogService.processSpecificUserBlog(
+    const result = await blogService.processSpecificUserBlog(
+      page,
+      size,
       userData
     );
 
-    const jsonBlogs = isGetUserAllBlogs.map((blog) =>
-      blog.get({ plain: true })
-    );
+    const jsonBlogs = result.blogs.map((blog) => {
+      const { ...blogData } = blog.get({ plain: true });
+      return blogData;
+    });
+    // console.log("Json", jsonBlogs);
+    const totalCount = result.count;
+    const arrayResult = [jsonBlogs, totalCount];
+    // console.log("XXXTT", arrayResult);
     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
-    if (!negotiate) {
-      return res.status(406).send("Not Acceptable");
-    }
-
     res.type(negotiate);
-    const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
+    const response = await getContentBasedOnNegotiation(arrayResult, negotiate);
     return res.status(200).send(response);
   } catch (error) {
     next(error);
@@ -54,13 +59,14 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
   try {
     const page = Number.parseInt(req.query.page);
     const size = Number.parseInt(req.query.size);
-    
+
     const result = await blogService.processAllBlogs(page, size);
 
     const jsonBlogs = result.blogs.map((blog) => {
       const { ...blogData } = blog.get({ plain: true });
       return blogData;
     });
+    // console.log("Json", jsonBlogs);
 
     const totalCount = result.totalBlogs;
 
@@ -75,26 +81,6 @@ const handleGetAllBlogsRequest = async (req, res, next) => {
     next(error);
   }
 };
-
-// const handleGetAllBlogsRequest = async (req, res, next) => {
-//   try {
-//     const page = Number.parseInt(req.query.page);
-//     const size = Number.parseInt(req.query.size);
-
-//     const isGetAllBlogs = await blogService.processAllBlogs(page, size);
-
-//     const jsonBlogs = isGetAllBlogs.map((blogs) => blogs.get({ plain: true }));
-
-//     const negotiate = req.accepts(["json", "text", "xml", "html"]);
-
-//     res.type(negotiate);
-//     const response = await getContentBasedOnNegotiation(jsonBlogs, negotiate);
-
-//     return res.status(200).send(response);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 const handleBlogDeletionRequest = async (req, res, next) => {
   try {
